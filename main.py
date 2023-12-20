@@ -1,6 +1,7 @@
 import pickle
 from address_book import AddressBook, Record
 from birthday_reminder import get_birthdays_per_week
+from notebook import Notebook, add_note, delete_note, edit_note, search_notes
 
 
 # decorators block
@@ -137,8 +138,6 @@ def get_all_phones(args, contacts: AddressBook):
             phone_info = '; '.join([p.value for p in r.phones])
             birthday_info = r.birthday if r.birthday != "Unknown" else "Unknown"
 
-            # print + Address_info
-
             address_info = ''
             if hasattr(r, 'addresses') and r.addresses:
                 address_info = f"\nAddresses: {[a.value for a in r.addresses]}"
@@ -253,11 +252,12 @@ def add_address(args: list, contacts: AddressBook):
 
 def main():
     contacts = read_data()
+    notebook = Notebook()
     print("Welcome to the assistant bot!\nPrint 'Help' to see all commands.\n")
     while True:
         user_input = input("Enter a command: ").strip().lower()
         command, *args = parse_input(user_input) if len(user_input) > 0 else " "
-        menu = {
+        address_book_menu = {
             "hello": hello,
             "add": add_contact,
             "change": change_contact,
@@ -267,16 +267,25 @@ def main():
             'add-birthday': add_birthday,
             'show-birthday': show_birthday,
             'birthdays': get_birthdays_per_week,
-            "add-address": add_address,
+            "add-address": add_address
         }
-
+        notebook_menu = {
+            "add-note": add_note, 
+            "edit-note": edit_note,
+            "search-notes": search_notes,
+            "delete-note": delete_note
+        }
         if command in ["close", "exit", "good bye"]:
             print("Good bye!")
             write_data(contacts)
+            notebook.save_notes()
             break
-        elif command in menu:
-            menu[command](args, contacts)
+        elif command in address_book_menu:
+            address_book_menu[command](args, contacts)
             write_data(contacts)
+        elif command in notebook_menu:
+            notebook_menu[command](notebook, args)
+            notebook.save_notes()
         else:
             print("Invalid command. Print 'Help' to see all commands.\n")
 
