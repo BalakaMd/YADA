@@ -2,6 +2,8 @@ import pickle
 from address_book import AddressBook, Record
 from birthday_reminder import get_birthdays_per_week
 
+class PhoneLengthError(Exception):
+    pass
 
 # decorators block
 
@@ -29,6 +31,8 @@ def input_error(func):
                 print('Enter a command in this format --->>> <show-birthday> <name>\n')
             else:
                 print("Enter a command in this format --->>> <phone> <name>\n")
+        except PhoneLengthError:
+            print('Phone number must have 10 numbers. Try again.\n')
 
     return inner
 
@@ -119,6 +123,26 @@ def get_phone(args: list, contacts: AddressBook):
         print(f'{args[0].title()} phone(\'s) is: {[p.value for p in contacts[args[0]].phones]}\n')
     else:
         raise KeyError
+
+@input_error
+def get_name(args: list, contacts: AddressBook):
+    """
+    Returns the name and phone number if the contact is found by phone number.
+    KeyError if the contact does not exist
+    :param args:
+    :param contacts:
+    :return The name and phone number if the contact is found.
+    Return KeyError if the contact does not exist :
+    """
+    if len(args[0]) != 10:
+        raise PhoneLengthError
+
+    result = contacts.find_by_phone(args[0])
+    if result is not None:
+        print(f'Phone number {args[0]} belongs to {result.name.value.capitalize()}')
+    else:
+        raise KeyError
+        # print(f'Contact with phone {args[0]} not found\n')
 
 
 @input_error
@@ -262,6 +286,7 @@ def main():
             "add": add_contact,
             "change": change_contact,
             "phone": get_phone,
+            "name": get_name,
             "all": get_all_phones,
             "help": user_help,
             'add-birthday': add_birthday,
