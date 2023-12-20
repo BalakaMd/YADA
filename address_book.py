@@ -105,18 +105,21 @@ class Birthday(Field):
         else:
             raise ValueError("Birthday date must in this format 'DD.MM.YYYY'")
 
-#CLASS Address
+
+# CLASS Address
 class Address(Field):
     def __init__(self, country: str, city: str, street: str, house_number: str, apartment_number: str = ''):
-        super().__init__(f"Country: {country}, City: {city}, Street: {street}, House_Number: {house_number}, Apartment_Number: {apartment_number}")
+        super().__init__(
+            f"Country: {country}, City: {city}, Street: {street}, House_Number: {house_number}, Apartment_Number: {apartment_number}")
         self.country = country
         self.city = city
         self.street = street
         self.house_number = house_number
         self.apartment_number = apartment_number
-    
+
     def __str__(self):
         return f"Country: {self.country}, City: {self.city}, Street: {self.street}, House_Number: {self.house_number}, Apartment_Number: {self.apartment_number}"
+
 
 class Record:
     """
@@ -177,18 +180,19 @@ class Record:
     @data_validator
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
-    
+
     # Add addresses attribute
     def add_address(self, country, city, street, house_number, apartment_number):
         self.addresses.append(Address(country, city, street, house_number, apartment_number))
 
-
     def __str__(self):
         phone_info = '; '.join([p.value for p in self.phones])
         birthday_info = self.birthday if self.birthday != "Unknown" else "Unknown"
-        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) if hasattr(self, 'addresses') else "Unknown"
+        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) if hasattr(self,
+                                                                                               'addresses') else "Unknown"
 
         return f"Contact name: {self.name}, phones: {phone_info}, birthday: {birthday_info}, addresses: {address_info}"
+
 
 class AddressBook(UserDict):
     """
