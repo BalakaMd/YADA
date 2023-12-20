@@ -222,6 +222,21 @@ class AddressBook(UserDict):
                 if record_phone.value == phone:
                     return record
         return None
+    
+    
+    def find_by_birthday(self, birthday: str):
+        """
+        Finds records in the address book by birthday.
+        :param birthday: A string representing the birthday in the format 'DD.MM.YYYY'.
+        :return returns a list of contact information:
+        """
+        matching_records = []
+
+        for record in self.data.values():
+            if str(record.birthday) == birthday:
+                matching_records.append(record)
+
+        return matching_records
 
     def delete(self, name: str):
         """
