@@ -132,11 +132,15 @@ def find_by_name(args: list, contacts: AddressBook):
     :return The name and phone number if the contact is found.
     Return KeyError if the contact does not exist :
     """
+    data = []
+    headers = ["Name", "Phone"]
     name = args[0]
     if name in contacts:
-        print(f'{name.title()} phone(\'s) is: {[phone.value for phone in contacts[name].phones]}\n')
+        data.append([name.title(), [phone.value for phone in contacts[name].phones]])
     else:
         raise KeyError
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
 
 
 @input_error
@@ -152,12 +156,15 @@ def find_by_phone(args: list, contacts: AddressBook):
     if len(args[0]) != 10:
         raise PhoneLengthError
 
+    data = []
+    headers = ["Name", "Phone"]
     result = contacts.find_by_phone(args[0])
     if result is not None:
-        print(f'Phone number {args[0]} belongs to {result.name.value.capitalize()}')
+        data.append([result.name.value.capitalize(), args[0]])
     else:
         raise KeyError
-        # print(f'Contact with phone {args[0]} not found\n')
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
 
 
 @input_error
@@ -175,14 +182,17 @@ def find_by_birthday(args: list, contacts: AddressBook):
     except ValueError:
         raise BirthdayFormatError
 
+    data = []
+    headers = ["Name", "Birthday"]
     results = contacts.find_by_birthday(args[0])
 
     if results:
         for result in results:
-            print(f'{result.name.value.capitalize()}\'s birthday is on {result.birthday}')
-            # print(result)
+            data.append([result.name.value.capitalize(), result.birthday])
     else:
         raise KeyError
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
 
 
 def get_all_phones(args, contacts: AddressBook):
