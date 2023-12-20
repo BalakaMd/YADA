@@ -1,10 +1,16 @@
 import pickle
+from datetime import datetime
 from address_book import AddressBook, Record
 from birthday_reminder import get_birthdays_per_week
 from notebook import Notebook, add_note, delete_note, edit_note, search_notes
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 
+class PhoneLengthError(Exception):
+    pass
+
+class BirthdayFormatError(Exception):
+    pass
 
 # decorators block
 
@@ -32,6 +38,10 @@ def input_error(func):
                 print('Enter a command in this format --->>> <show-birthday> <name>\n')
             else:
                 print("Enter a command in this format --->>> <phone> <name>\n")
+        except PhoneLengthError:
+            print("Phone number must be 10 digits long\n")
+        except BirthdayFormatError:
+            print("Birthday date must in this format 'DD.MM.YYYY'\n")
 
     return inner
 
@@ -109,7 +119,7 @@ def change_contact(args: list, contacts: AddressBook):
 
 
 @input_error
-def get_phone(args: list, contacts: AddressBook):
+def find_by_name(args: list, contacts: AddressBook):
     """
     Returns the name and phone number if the contact is found.
     KeyError if the contact does not exist
@@ -124,6 +134,49 @@ def get_phone(args: list, contacts: AddressBook):
     else:
         raise KeyError
 
+@input_error
+def find_by_phone(args: list, contacts: AddressBook):
+    """
+    Returns the name and phone number if the contact is found by phone number.
+    KeyError if the contact does not exist
+    :param args:
+    :param contacts:
+    :return The name and phone number if the contact is found.
+    Return KeyError if the contact does not exist :
+    """
+    if len(args[0]) != 10:
+        raise PhoneLengthError
+
+    result = contacts.find_by_phone(args[0])
+    if result is not None:
+        print(f'Phone number {args[0]} belongs to {result.name.value.capitalize()}')
+    else:
+        raise KeyError
+        # print(f'Contact with phone {args[0]} not found\n')
+    
+@input_error
+def find_by_birthday(args: list, contacts: AddressBook):
+    """
+    Returns the name and phone number if the contact is found by birthday.
+    KeyError if the contact does not exist or if the date format is invalid.
+    :param args:
+    :param contacts:
+    :return The name and phone number if the contact is found.
+    Return KeyError if the contact does not exist or if the date format is invalid.
+    """
+    try:
+        datetime.strptime(args[0], '%d.%m.%Y')
+    except ValueError:
+        raise BirthdayFormatError
+
+    results = contacts.find_by_birthday(args[0])
+
+    if results:
+        for result in results:
+            print(f'{result.name.value.capitalize()}\'s birthday is on {result.birthday}')
+            # print(result)
+    else:
+        raise KeyError
 
 def get_all_phones(args, contacts: AddressBook):
     """
@@ -192,17 +245,19 @@ def user_help(*args, **kwargs):
     print("""
     1. 'Add' <name> <phone number> --> Adding a new contact to the contacts.
     2. 'Change' <name> <old phone number> <new phone number> --> Stores in memory a new phone number for the username.
-    3. 'Phone' <name> --> Return the name and phone number of contact.
-    4. 'All' --> Return all saved contacts with phone numbers, birthdays and addresses-info.
-    6. 'Add-birthday' <name> <DD.MM.YYYY> --> Adding a birthday date to the contact.
-    7. 'Show-birthday' <name> --> Return birthday of the requested user from contacts.
-    8. 'Birthdays' --> Print a list of people who need to be greeted by days in the next week.
-    9. 'add-address' <name> <country> <city> <street> <house number> <apartment number> --> Adding an address to the contact.
-    10. 'add-note' <text> --> Adding note to user\'s notebook.
-    10. 'edit-note' <id> <text> --> Editing note by id from user\'s notebook.
-    10. 'delete-note' <id> --> Deleting note from user\'s notebook.
-    11. 'search-notes' <query> --> Searching notes in user\'s notebook by specified query.
-    10. 'Close' or 'Exit' --> Exit the program.
+    3. 'find-phone' <name> --> Return the name and phone number of contact.
+    4. 'find-name' <phone> --> Returns the phone number and the contact to whom it belongs.
+    5. 'find-birthday' <birthday> --> Returns the names of contacts who have a birthday on this day.
+    6. 'All' --> Return all saved contacts with phone numbers, birthdays and addresses-info.
+    7. 'Add-birthday' <name> <DD.MM.YYYY> --> Adding a birthday date to the contact.
+    8. 'Show-birthday' <name> --> Return birthday of the requested user from contacts.
+    9. 'Birthdays' --> Print a list of people who need to be greeted by days in the next week.
+    10. 'add-address' <name> <country> <city> <street> <house number> <apartment number> --> Adding an address to the contact.
+    11. 'add-note' <text> --> Adding note to user\'s notebook.
+    12. 'edit-note' <id> <text> --> Editing note by id from user\'s notebook.
+    13. 'delete-note' <id> --> Deleting note from user\'s notebook.
+    14. 'search-notes' <query> --> Searching notes in user\'s notebook by specified query.
+    15. 'Close' or 'Exit' --> Exit the program.
         """)
 
 
@@ -263,12 +318,14 @@ def main():
         "hello": hello,
         "add": add_contact,
         "change": change_contact,
-        "phone": get_phone,
+        "find-name": find_by_name,
+        "find-phone": find_by_phone,
+        "find-birthday": find_by_birthday,
         "all": get_all_phones,
         "help": user_help,
-        'add-birthday': add_birthday,
-        'show-birthday': show_birthday,
-        'birthdays': get_birthdays_per_week,
+        "add-birthday": add_birthday,
+        "show-birthday": show_birthday,
+        "birthdays": get_birthdays_per_week,
         "add-address": add_address,
     }
     notebook_menu = {

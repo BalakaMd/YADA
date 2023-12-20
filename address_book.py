@@ -214,6 +214,33 @@ class AddressBook(UserDict):
         :return returns the string representation of the contact information:
         """
         return f'{self.data.get(name.lower())}\n'
+    
+    def find_by_phone(self, phone: str):
+        """
+        Finds a record in the address book by phone number.
+        :param phone:
+        :return returns the contact information:
+        """
+        for record in self.data.values():
+            for record_phone in record.phones:
+                if record_phone.value == phone:
+                    return record
+        return None
+    
+    
+    def find_by_birthday(self, birthday: str):
+        """
+        Finds records in the address book by birthday.
+        :param birthday: A string representing the birthday in the format 'DD.MM.YYYY'.
+        :return returns a list of contact information:
+        """
+        matching_records = []
+
+        for record in self.data.values():
+            if str(record.birthday) == birthday:
+                matching_records.append(record)
+
+        return matching_records
 
     def delete(self, name: str):
         """
