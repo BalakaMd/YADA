@@ -1,6 +1,8 @@
 import pickle
 from address_book import AddressBook, Record
 from birthday_reminder import get_birthdays_per_week
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 
 
 # decorators block
@@ -44,6 +46,7 @@ def open_file_error(func):
         try:
             return func(*args, **kwargs)
         except FileNotFoundError:
+            print('Contact book was not found. A new one was created.\n')
             return AddressBook()
 
     return inner
@@ -87,7 +90,6 @@ def add_contact(args: list, contacts: AddressBook):
 def change_contact(args: list, contacts: AddressBook):
     """
     Stores in memory a new phone number for the username contact that already exists in the AddressBook.
-    Creates a new contact if it does not exist.
     :param args:
     :param contacts: 
     :return "Contact changed." if the changing was successful: 
@@ -96,10 +98,10 @@ def change_contact(args: list, contacts: AddressBook):
     if name not in contacts:
         print('Contact not found.\n')
         return None
-    for n, r in contacts.data.items():
-        if n == name:
-            if r.find_phone(old_phone):
-                r.edit_phone(old_phone, new_phone)
+    for u_name, record in contacts.data.items():
+        if u_name == name:
+            if record.find_phone(old_phone):
+                record.edit_phone(old_phone, new_phone)
                 break
             else:
                 print('Old phone number not found.\n')
@@ -115,13 +117,13 @@ def get_phone(args: list, contacts: AddressBook):
     :return The name and phone number if the contact is found.
     Return KeyError if the contact does not exist :
     """
-    if args[0] in contacts:
-        print(f'{args[0].title()} phone(\'s) is: {[p.value for p in contacts[args[0]].phones]}\n')
+    name = args[0]
+    if name in contacts:
+        print(f'{name.title()} phone(\'s) is: {[phone.value for phone in contacts[name].phones]}\n')
     else:
         raise KeyError
 
 
-@input_error
 def get_all_phones(args, contacts: AddressBook):
     """
     Return all saved contacts with phone numbers and birthdays to the console, if any.
@@ -133,29 +135,29 @@ def get_all_phones(args, contacts: AddressBook):
     if len(contacts) == 0:
         print("There are still no entries in your notebook. Try making one.\n")
     else:
-        for n, r in contacts.data.items():
-            phone_info = '; '.join([p.value for p in r.phones])
-            birthday_info = r.birthday if r.birthday != "Unknown" else "Unknown"
+        for name, record in contacts.data.items():
+            phone_info = '; '.join([phone.value for phone in record.phones])
+            birthday_info = record.birthday if record.birthday != "Unknown" else "Unknown"
 
             # print + Address_info
 
             address_info = ''
-            if hasattr(r, 'addresses') and r.addresses:
-                address_info = f"\nAddresses: {[a.value for a in r.addresses]}"
+            if hasattr(record, 'addresses') and record.addresses:
+                address_info = f"\nAddresses: {[a.value for a in record.addresses]}"
 
-            print(f"Contact name: {n.title()}, phones: {phone_info}, birthday: {birthday_info}{address_info}\n")
+            print(f"Contact name: {name.title()}, phones: {phone_info}, birthday: {birthday_info}{address_info}\n")
 
 
 @open_file_error
 def read_data(path='data'):
     """
     Read users from the given file using 'pickle' package.
-    By default path = 'data'.
+    By default, path = 'data'.
     :param path:
     :return AddressBook:
     """
-    with open(path, "rb") as fh:
-        unpacked = pickle.load(fh)
+    with open(path, "rb") as file:
+        unpacked = pickle.load(file)
     return unpacked
 
 
@@ -167,8 +169,8 @@ def write_data(contacts: AddressBook, path='data'):
     :param path:
     :return  None:
     """
-    with open(path, "wb") as fh:
-        pickle.dump(contacts, fh)
+    with open(path, "wb") as file:
+        pickle.dump(contacts, file)
 
 
 def hello(*args, **kwargs):
@@ -253,22 +255,24 @@ def add_address(args: list, contacts: AddressBook):
 
 def main():
     contacts = read_data()
+    menu = {
+        "hello": hello,
+        "add": add_contact,
+        "change": change_contact,
+        "phone": get_phone,
+        "all": get_all_phones,
+        "help": user_help,
+        'add-birthday': add_birthday,
+        'show-birthday': show_birthday,
+        'birthdays': get_birthdays_per_week,
+        "add-address": add_address,
+    }
+    commands_list = list(menu.keys())
+    completer = WordCompleter(commands_list)
     print("Welcome to the assistant bot!\nPrint 'Help' to see all commands.\n")
     while True:
-        user_input = input("Enter a command: ").strip().lower()
+        user_input = prompt('Enter a command: ', completer=completer)
         command, *args = parse_input(user_input) if len(user_input) > 0 else " "
-        menu = {
-            "hello": hello,
-            "add": add_contact,
-            "change": change_contact,
-            "phone": get_phone,
-            "all": get_all_phones,
-            "help": user_help,
-            'add-birthday': add_birthday,
-            'show-birthday': show_birthday,
-            'birthdays': get_birthdays_per_week,
-            "add-address": add_address,
-        }
 
         if command in ["close", "exit", "good bye"]:
             print("Good bye!")
