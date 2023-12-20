@@ -214,7 +214,7 @@ class AddressBook(UserDict):
         :return returns the string representation of the contact information:
         """
         return f'{self.data.get(name.lower())}\n'
-    
+
     def find_by_phone(self, phone: str):
         """
         Finds a record in the address book by phone number.
@@ -226,8 +226,7 @@ class AddressBook(UserDict):
                 if record_phone.value == phone:
                     return record
         return None
-    
-    
+
     def find_by_birthday(self, birthday: str):
         """
         Finds records in the address book by birthday.

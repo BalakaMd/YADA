@@ -5,12 +5,16 @@ from birthday_reminder import get_birthdays_per_week
 from notebook import Notebook, add_note, delete_note, edit_note, search_notes
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
+from tabulate import tabulate
+
 
 class PhoneLengthError(Exception):
     pass
 
+
 class BirthdayFormatError(Exception):
     pass
+
 
 # decorators block
 
@@ -134,6 +138,7 @@ def find_by_name(args: list, contacts: AddressBook):
     else:
         raise KeyError
 
+
 @input_error
 def find_by_phone(args: list, contacts: AddressBook):
     """
@@ -153,7 +158,8 @@ def find_by_phone(args: list, contacts: AddressBook):
     else:
         raise KeyError
         # print(f'Contact with phone {args[0]} not found\n')
-    
+
+
 @input_error
 def find_by_birthday(args: list, contacts: AddressBook):
     """
@@ -178,6 +184,7 @@ def find_by_birthday(args: list, contacts: AddressBook):
     else:
         raise KeyError
 
+
 def get_all_phones(args, contacts: AddressBook):
     """
     Return all saved contacts with phone numbers and birthdays to the console, if any.
@@ -186,18 +193,15 @@ def get_all_phones(args, contacts: AddressBook):
     :param contacts:
     :return all saved contacts:
     """
+    data = []
+    headers = ["Name", "Phones", "Birthday", "Addresses"]
     if len(contacts) == 0:
         print("There are still no entries in your notebook. Try making one.\n")
     else:
         for name, record in contacts.data.items():
-            phone_info = '; '.join([phone.value for phone in record.phones])
-            birthday_info = record.birthday if record.birthday != "Unknown" else "Unknown"
-
-            address_info = ''
-            if hasattr(record, 'addresses') and record.addresses:
-                address_info = f"\nAddresses: {[a.value for a in record.addresses]}"
-
-            print(f"Contact name: {name.title()}, phones: {phone_info}, birthday: {birthday_info}{address_info}\n")
+            data.append([name.title(), [phone.value for phone in record.phones], record.birthday, record.addresses])
+        table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+        print(table)
 
 
 @open_file_error
@@ -242,23 +246,27 @@ def user_help(*args, **kwargs):
     :param kwargs:
     :return None:
     """
-    print("""
-    1. 'Add' <name> <phone number> --> Adding a new contact to the contacts.
-    2. 'Change' <name> <old phone number> <new phone number> --> Stores in memory a new phone number for the username.
-    3. 'find-phone' <name> --> Return the name and phone number of contact.
-    4. 'find-name' <phone> --> Returns the phone number and the contact to whom it belongs.
-    5. 'find-birthday' <birthday> --> Returns the names of contacts who have a birthday on this day.
-    6. 'All' --> Return all saved contacts with phone numbers, birthdays and addresses-info.
-    7. 'Add-birthday' <name> <DD.MM.YYYY> --> Adding a birthday date to the contact.
-    8. 'Show-birthday' <name> --> Return birthday of the requested user from contacts.
-    9. 'Birthdays' --> Print a list of people who need to be greeted by days in the next week.
-    10. 'add-address' <name> <country> <city> <street> <house number> <apartment number> --> Adding an address to the contact.
-    11. 'add-note' <text> --> Adding note to user\'s notebook.
-    12. 'edit-note' <id> <text> --> Editing note by id from user\'s notebook.
-    13. 'delete-note' <id> --> Deleting note from user\'s notebook.
-    14. 'search-notes' <query> --> Searching notes in user\'s notebook by specified query.
-    15. 'Close' or 'Exit' --> Exit the program.
-        """)
+    data = [
+        [1, 'Add', '<name> <phone number>', 'Adding a new contact to the contacts'],
+        [2, 'Change', '<name> <old p_number> <new p_number>',
+         'Stores in memory a new phone number for the username.'],
+        [3, 'find-phone', '<name>', 'Return the name and phone number of contact.'],
+        [4, 'find-name', '<phone>', 'Returns the phone number and the contact to whom it belongs.'],
+        [5, 'find-birthday', '<birthday>', 'Returns the names of contacts who have a birthday on this day.'],
+        [6, 'All', '', 'Return all saved contacts with p_numbers, birthdays and addresses.'],
+        [7, 'Add-birthday', '<name> <DD.MM.YYYY>', 'Adding a birthday date to the contact.'],
+        [8, 'Show-birthday', '<name>', 'Return birthday of the requested user from contacts.'],
+        [9, 'Birthdays', '', 'Print a list of people who need to be greeted by days in the n_week.'],
+        [10, 'add-address', '<name> <country> <city> <...>', 'Adding an address to the contact.'],
+        [11, 'add-note', '<text>', "Adding note to user's notebook."],
+        [12, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
+        [13, 'delete-note', '<id>', "Deleting note from user's notebook."],
+        [14, 'search-notes', '<query>', "Searching notes in user's notebook by specified query."],
+        [15, 'Close/Exit', '', "Exit the program."]
+    ]
+    headers = ["#", "Command", "Arguments", "Description"]
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
 
 
 @input_error
@@ -329,13 +337,13 @@ def main():
         "add-address": add_address,
     }
     notebook_menu = {
-            "add-note": add_note, 
-            "edit-note": edit_note,
-            "search-notes": search_notes,
-            "delete-note": delete_note
-        }
+        "add-note": add_note,
+        "edit-note": edit_note,
+        "search-notes": search_notes,
+        "delete-note": delete_note
+    }
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
-    commands_list = list(menu)
+    commands_list = list(menu) + ["close", "exit", "good bye"]
     completer = WordCompleter(commands_list)
     print("Welcome to the assistant bot!\nPrint 'Help' to see all commands.\n")
     while True:
