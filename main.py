@@ -119,7 +119,8 @@ def get_phone(args: list, contacts: AddressBook):
         print(f'{args[0].title()} phone(\'s) is: {[p.value for p in contacts[args[0]].phones]}\n')
     else:
         raise KeyError
-        
+
+
 @input_error
 def get_all_phones(args, contacts: AddressBook):
     """
@@ -135,14 +136,15 @@ def get_all_phones(args, contacts: AddressBook):
         for n, r in contacts.data.items():
             phone_info = '; '.join([p.value for p in r.phones])
             birthday_info = r.birthday if r.birthday != "Unknown" else "Unknown"
-            
+
             # print + Address_info
-            
+
             address_info = ''
             if hasattr(r, 'addresses') and r.addresses:
                 address_info = f"\nAddresses: {[a.value for a in r.addresses]}"
 
             print(f"Contact name: {n.title()}, phones: {phone_info}, birthday: {birthday_info}{address_info}\n")
+
 
 @open_file_error
 def read_data(path='data'):
@@ -229,6 +231,7 @@ def show_birthday(args, contacts: AddressBook):
     else:
         raise KeyError
 
+
 @input_error
 def add_address(args: list, contacts: AddressBook):
     """
@@ -244,6 +247,7 @@ def add_address(args: list, contacts: AddressBook):
         print("Address added.")
     else:
         raise AttributeError
+
 
 # main block
 
