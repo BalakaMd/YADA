@@ -2,15 +2,17 @@
 
 NOTES_FILE_NAME = "notes.txt"
 
+
 # Model Note
 class Note:
     """
     Class that represents note in notebook.
     """
 
-    def __init__(self, text, id = None):
+    def __init__(self, text, id=None):
         self.text = text
         self.id = id
+
 
 # Model Notebook
 class Notebook:
@@ -21,7 +23,7 @@ class Notebook:
     def __init__(self):
         self.notes = []
         self.load_notes()
-        
+
     def save_notes(self):
         """
         Saving notes into the text file.
@@ -38,14 +40,15 @@ class Notebook:
         """
         try:
             with open(NOTES_FILE_NAME, "r") as file:
-                self.notes = [Note(text = line.rstrip().split(":", 1)[1], id = int(line.split(":", 1)[0])) 
+                self.notes = [Note(text=line.rstrip().split(":", 1)[1], id=int(line.split(":", 1)[0]))
                               for line in file]
         except FileNotFoundError:
             print(f"File with notes {NOTES_FILE_NAME} doesn\'t exist!")
             pass
-        
+
+
 # decorators block
-        
+
 def input_error(func):
     """
     Handles exception 'ValueError', 'IndexError' on user input.
@@ -68,6 +71,7 @@ def input_error(func):
 
     return inner
 
+
 # functions block
 
 @input_error
@@ -79,10 +83,11 @@ def add_note(notebook, args):
     :return None:
     """
     text = args[0]
-    new_id = max([note.id for note in notebook.notes], default = 0) + 1
+    new_id = max([note.id for note in notebook.notes], default=0) + 1
     notebook.notes.append(Note(text, new_id))
     print(f"Note was added under the id:{new_id}.")
     notebook.save_notes()
+
 
 @input_error
 def edit_note(notebook, args):
@@ -102,6 +107,7 @@ def edit_note(notebook, args):
             return
     print(f"Note with Id:{note_id} doesn't exist.")
 
+
 @input_error
 def search_notes(notebook, args):
     """
@@ -118,6 +124,7 @@ def search_notes(notebook, args):
     if count == 0:
         print("There are no notes matching specified criteria.")
 
+
 @input_error
 def delete_note(notebook, args):
     """
@@ -132,5 +139,5 @@ def delete_note(notebook, args):
         print(f"There is no note with id {note_id}.")
         return
     else:
-      notebook.save_notes()
-      print(f"Note with Id:{note_id} was deleted.")
+        notebook.save_notes()
+        print(f"Note with Id:{note_id} was deleted.")
