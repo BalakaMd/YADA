@@ -1,6 +1,6 @@
 import pickle
 from datetime import datetime
-from address_book import AddressBook, Record
+from address_book import AddressBook, Record, Color
 from birthday_reminder import get_birthdays_per_week
 from notebook import Notebook, add_note, delete_note, edit_note, search_notes
 from prompt_toolkit import prompt
@@ -59,7 +59,7 @@ def change_contact(args: list, contacts: AddressBook):
     except ValueError:
         raise exceptions.ChangeContactValueError
     if name not in contacts:
-        print('Contact not found.\n')
+        print(f"{Color.RED}Contact not found.\n{Color.RESET}")
         return None
     for u_name, record in contacts.data.items():
         if u_name == name:
@@ -67,7 +67,7 @@ def change_contact(args: list, contacts: AddressBook):
                 record.edit_phone(old_phone, new_phone)
                 break
             else:
-                print('Old phone number not found.\n')
+                print(f"{Color.RED}Old phone number not found.\n{Color.RESET}")
 
 
 @exceptions.input_error
@@ -162,7 +162,7 @@ def get_all_phones(args, contacts: AddressBook):
     data = []
     headers = ["Name", "Phones", "Birthday", "Addresses"]
     if len(contacts) == 0:
-        print("There are still no entries in your notebook. Try making one.\n")
+        print(f"{Color.RED}There are still no entries in your notebook. Try making one.\n{Color.RESET}")
     else:
         for name, record in contacts.data.items():
             data.append([name.title(), [phone.value for phone in record.phones], record.birthday, record.addresses])
@@ -219,6 +219,8 @@ def user_help(*args, **kwargs):
         [13, 'delete-note', '<id>', "Deleting note from user's notebook."],
         [14, 'search-notes', '<query>', "Searching notes in user's notebook by specified query."],
         [15, 'close/Exit', '', "Exit the program."]
+        [16, 'add-email', '<name> <email address>', "Adding an email to the contact."],
+        [17, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address"]
     ]
     headers = ["#", "Command", "Arguments", "Description"]
     table = tabulate(data, headers=headers, tablefmt="fancy_grid")
@@ -257,7 +259,7 @@ def show_birthday(args, contacts: AddressBook):
     except IndexError:
         raise exceptions.ShowBirthdayIndexError
     if name in contacts:
-        print(f'{name.title()}\'s birthday is on {contacts[name].birthday}\n')
+        print(f'{Color.YELLOW}{name.title()}{Color.RESET}\'s birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
     else:
         raise exceptions.BirthdayKeyError
 
@@ -274,7 +276,37 @@ def add_address(args: list, contacts: AddressBook):
     if name in contacts:
         user = contacts[name]
         user.add_address(country, city, street, house_number, apartment_number)
-        print("Address added.")
+        print(f"{Color.GREEN}Address added.{Color.RESET}")
+    else:
+        raise AttributeError
+
+@input_error
+def add_email(args: list, contacts: AddressBook):
+    """
+    Adds an email to the user in contacts.
+    :param args:
+    :param contacts:
+    """
+    name, email = args
+    if name in contacts:
+        user = contacts[name]
+        user.add_email(email)
+        write_data(contacts)
+    else:
+        raise AttributeError
+    
+@input_error
+def edit_email(args: list, contacts: AddressBook):
+    """
+    Edits an email for the user in contacts.
+    :param args:
+    :param contacts:
+    """
+    name, old_email, new_email = args
+    if name in contacts:
+        user = contacts[name]
+        user.edit_email(old_email, new_email)
+        write_data(contacts)
     else:
         raise AttributeError
 
@@ -296,6 +328,8 @@ def main():
         "show-birthday": show_birthday,
         "birthdays": get_birthdays_per_week,
         "add-address": add_address,
+        "add-email": add_email,
+        "edit-email": edit_email,
     }
     notebook_menu = {
         "add-note": add_note,
@@ -306,12 +340,12 @@ def main():
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
     commands_list = list(menu) + ["close", "exit", "good bye", 'hello']
     completer = WordCompleter(commands_list)
-    print("Welcome to the assistant bot!\nPrint 'Help' to see all commands.\n")
+    print(f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
     while True:
         user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
         command, *args = parse_input(user_input) if len(user_input) > 0 else " "
         if command in ["close", "exit", "good bye"]:
-            print("Good bye!")
+            print(f"{Color.YELLOW_BOLD}Good bye!{Color.RESET}")
             write_data(contacts)
             notebook.save_notes()
             break
@@ -324,7 +358,7 @@ def main():
             notebook_menu[command](notebook, args)
             notebook.save_notes()
         else:
-            print("Invalid command. Print 'Help' to see all commands.\n")
+            print(f"{Color.RED}Invalid command. Print 'Help' to see all commands.\n{Color.RESET}")
 
 
 if __name__ == "__main__":
