@@ -280,7 +280,7 @@ def add_address(args: list, contacts: AddressBook):
     else:
         raise AttributeError
 
-@input_error
+@exceptions.input_error
 def add_email(args: list, contacts: AddressBook):
     """
     Adds an email to the user in contacts.
@@ -295,7 +295,7 @@ def add_email(args: list, contacts: AddressBook):
     else:
         raise AttributeError
     
-@input_error
+@exceptions.input_error
 def edit_email(args: list, contacts: AddressBook):
     """
     Edits an email for the user in contacts.
