@@ -324,6 +324,33 @@ class AddressBook(UserDict):
                 matching_records.append(record)
 
         return matching_records
+    
+    def find_by_email(self, email):
+        """
+        Finds records in the address book by email.
+        :param birthday: A string representing the email.
+        :return returns a list of contact information:
+        """
+        matching_records = []
+        for record in self.data.values():
+            for record_email in record.emails:
+                if str(record_email.value.lower()) == email.lower():
+                    matching_records.append(record)
+        return matching_records
+
+
+    def find_by_address(self, address):
+        """
+        Finds records in the address book by address.
+        :param birthday: A string representing the address.
+        :return returns a list of contact information:
+        """
+        matching_records = []
+        for record in self.data.values():
+            for record_address in record.addresses:
+                if record_address.city.lower() == address.lower():
+                    matching_records.append(record)
+        return matching_records
 
     def delete(self, name: str):
         """

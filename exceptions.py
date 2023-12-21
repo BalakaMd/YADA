@@ -61,6 +61,14 @@ class FindNameIndexError(Exception):
     pass
 
 
+class FindEmailIndexError(Exception):
+    pass
+
+
+class FindAddressIndexError(Exception):
+    pass
+
+
 # decorators block
 
 def input_error(func):
@@ -95,6 +103,10 @@ def input_error(func):
             print("Enter a command in this format --->>> <find-phone> <name>\n")
         except FindNameIndexError:
             print("Enter a command in this format --->>> <find-name> <phone>\n")
+        except FindEmailIndexError:
+            print("Enter a command in this format --->>> <find-email> <email>\n")
+        except FindAddressIndexError:
+            print("Enter a command in this format --->>> <find-address> <country> <city> <street> <house_number>\n")
         except PhoneLengthError:
             print("Phone number must be 10 digits long\n")
         except BirthdayFormatError:

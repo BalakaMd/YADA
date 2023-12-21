@@ -151,6 +151,65 @@ def find_by_birthday(args: list, contacts: AddressBook):
     print(table)
 
 
+@exceptions.input_error
+def find_by_email(args: list, contacts: AddressBook):
+    """
+    Returns the name and birthday if the contact is found by email.
+    KeyError if the contact does not exist.
+    :param args:
+    :param contacts:
+    :return The name and birthday if the contact is found.
+    Return KeyError if the contact does not exist.
+    """
+    try:
+        email_to_find = args[0]
+    except IndexError:
+        raise exceptions.FindEmailIndexError
+
+    data = []
+    headers = ["Name", "Email"]
+    results = contacts.find_by_email(email_to_find)
+
+    if results:
+        for result in results:
+            data.append([result.name.value.capitalize(), args[0]])
+    else:
+        raise KeyError
+
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
+
+
+@exceptions.input_error
+def find_by_address(args: list, contacts: AddressBook):
+    """
+    Returns the name and birthday if the contact is found by address.
+    KeyError if the contact does not exist.
+    :param args:
+    :param contacts:
+    :return The name and birthday if the contact is found.
+    Return KeyError if the contact does not exist.
+    """
+    try:
+        address_to_find = args[0]
+    except IndexError:
+        raise exceptions.FindAddressIndexError
+    
+    data = []
+    headers = ["Name", "Address"]
+    results = contacts.find_by_address(address_to_find)
+
+    if results:
+        for result in results:
+            search_address = '\n'.join([address.value for address in result.addresses if address_to_find.lower() in address.value.lower()])
+            data.append([result.name.value.capitalize(), search_address])
+    else:
+        raise KeyError
+
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
+
+
 def get_all_phones(args, contacts: AddressBook):
     """
     Return all saved contacts with phone numbers and birthdays to the console, if any.
@@ -213,19 +272,21 @@ def user_help(*args, **kwargs):
          'Stores in memory a new phone number for the username.'],
         [3, 'find-phone', '<name>', 'Return the name and phone number of contact.'],
         [4, 'find-name', '<phone>', 'Returns the phone number and the contact to whom it belongs.'],
-        [5, 'find-birthday', '<birthday>', 'Returns the names of contacts who have a birthday on this day.'],
-        [6, 'all', '', 'Return all saved contacts with p_numbers, birthdays and addresses.'],
-        [7, 'add-birthday', '<name> <DD.MM.YYYY>', 'Adding a birthday date to the contact.'],
-        [8, 'show-birthday', '<name>', 'Return birthday of the requested user from contacts.'],
-        [9, 'birthdays', '', 'Print a list of people who need to be greeted by days in the n_week.'],
-        [10, 'add-address', '<name> <country> <city> <...>', 'Adding an address to the contact.'],
-        [11, 'add-note', '<text>', "Adding note to user's notebook."],
-        [12, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
-        [13, 'delete-note', '<id>', "Deleting note from user's notebook."],
-        [14, 'search-notes', '<query>', "Searching notes in user's notebook by specified query."],
-        [15, 'close/Exit', '', "Exit the program."]
-        [16, 'add-email', '<name> <email address>', "Adding an email to the contact."],
-        [17, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address"]
+        [5, 'find-email', '<email>', 'Returns the email and the contact to whom it belongs.'],
+        [6, 'find-birthday', '<birthday>', 'Returns the names of contacts who have a birthday on this day.'],
+        [7, 'find-address', '<address>', 'Returns the name of the contact that has the following address.'],
+        [8, 'all', '', 'Return all saved contacts with p_numbers, birthdays and addresses.'],
+        [9, 'add-birthday', '<name> <DD.MM.YYYY>', 'Adding a birthday date to the contact.'],
+        [10, 'show-birthday', '<name>', 'Return birthday of the requested user from contacts.'],
+        [11, 'birthdays', '', 'Print a list of people who need to be greeted by days in the n_week.'],
+        [12, 'add-address', '<name> <country> <city> <...>', 'Adding an address to the contact.'],
+        [13, 'add-note', '<text>', "Adding note to user's notebook."],
+        [14, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
+        [15, 'delete-note', '<id>', "Deleting note from user's notebook."],
+        [16, 'search-notes', '<query>', "Searching notes in user's notebook by specified query."],
+        [17, 'close/Exit', '', "Exit the program."]
+        [18, 'add-email', '<name> <email address>', "Adding an email to the contact."],
+        [19, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address"]
     ]
     headers = ["#", "Command", "Arguments", "Description"]
     table = tabulate(data, headers=headers, tablefmt="fancy_grid")
@@ -339,7 +400,9 @@ def main():
         "change": change_contact,
         "find-name": find_by_name,
         "find-phone": find_by_phone,
+        "find-email": find_by_email,
         "find-birthday": find_by_birthday,
+        "find-address": find_by_address,
         "all": get_all_phones,
         "help": user_help,
         "add-birthday": add_birthday,
