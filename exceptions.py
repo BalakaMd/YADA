@@ -1,4 +1,4 @@
-from address_book import AddressBook
+from address_book import AddressBook, Color
 
 
 class PhoneLengthError(Exception):
@@ -58,29 +58,29 @@ def input_error(func):
         try:
             return func(*args, **kwargs)
         except AddContactValueError:
-            print("Enter a valid command in this format --->>> <add> <name> <phone number>\n")
+            print(f"{Color.RED}Enter a valid command in this format{Color.RESET} --->>> {Color.YELLOW}<add> <name> <phone number>\n{Color.RESET}")
         except ChangeContactValueError:
-            print("Enter a valid command in format --->>> <change> <name> <old phone number> <new phone number>\n")
+            print(f"{Color.RED}Enter a valid command in format{Color.RESET} --->>> {Color.YELLOW}<change> <name> <old phone number> <new phone number>\n{Color.RESET}")
         except AddBirthdayValueError:
-            print("Enter a valid command in this format --->>> <add-birthday> <name> <DD.MM.YYYY.>\n")
+            print(f"{Color.RED}Enter a valid command in this format{Color.RESET} --->>> {Color.YELLOW}<add-birthday> <name> <DD.MM.YYYY.>\n{Color.RESET}")
         except KeyError:
-            print('This contact was not found in the system. Try again.\n')
+            print(f"{Color.RED}This contact was not found in the system. Try again.\n{Color.RESET}")
         except ShowBirthdayIndexError:
-            print('Enter a command in this format --->>> <show-birthday> <name>\n')
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<show-birthday> <name>\n{Color.RESET}")
         except FindPhoneIndexError:
-            print("Enter a command in this format --->>> <find-phone> <name>\n")
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-phone> <name>\n{Color.RESET}")
         except FindNameIndexError:
-            print("Enter a command in this format --->>> <find-name> <phone>\n")
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-name> <phone>\n{Color.RESET}")
         except PhoneLengthError:
-            print("Phone number must be 10 digits long\n")
+            print(f"{Color.RED}Phone number must be 10 digits long\n{Color.RESET}")
         except BirthdayFormatError:
-            print("Birthday date must in this format 'DD.MM.YYYY.'\n")
+            print(f"{Color.RED}Birthday date must in this format{Color.RESET} {Color.YELLOW}'DD.MM.YYYY.'\n{Color.RESET}")
         except BirthdayIndexError:
-            print("Enter a command in this format --->>> <find-birthday> <'DD.MM.YYYY.'>\n")
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-birthday> <'DD.MM.YYYY.'>\n{Color.RESET}")
         except BirthdayKeyError:
-            print('This contact was not found in the system. Try again.\n')
+            print(f"{Color.RED}This contact was not found in the system. Try again.\n{Color.RESET}")
         except BirthdayNotFoundError:
-            print('Contact with this birthday date was not found. Try again.\n')
+            print(f"{Color.RED}Contact with this birthday date was not found. Try again.\n{Color.RESET}")
 
     return inner
 
@@ -96,7 +96,7 @@ def open_file_error(func):
         try:
             return func(*args, **kwargs)
         except FileNotFoundError:
-            print('Contact book was not found. A new one was created.\n')
+            print(f"{Color.RED}Contact book was not found. A new one was created.\n{Color.RESET}")
             return AddressBook()
 
     return inner
