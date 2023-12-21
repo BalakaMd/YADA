@@ -2,6 +2,21 @@ from collections import UserDict
 from datetime import date
 import re
 
+#Colors
+class Color:
+    RESET = "\033[0m"
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    WHITE = "\033[97m"
+    YELLOW_BOLD = "\033[93;1m"  
+    BLUE_BOLD = "\033[94;1m"    
+    MAGENTA_BOLD = "\033[95;1m" 
+    CYAN_BOLD = "\033[96;1m"    
+    WHITE_BOLD = "\033[97;1m" 
 
 def data_validator(func):
     """
@@ -22,9 +37,9 @@ def data_validator(func):
             func(*args, **kwargs)
         except ValueError:
             if func.__name__ == 'add_birthday':
-                print("Birthday date must in this format 'DD.MM.YYYY'\n")
+                print(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'\n{Color.RESET}")
             else:
-                print("Phone number must be 10 digits long\n")
+                print(f"{Color.RED}Phone number must be 10 digits long\n{Color.RESET}")
 
     return inner
 
@@ -79,10 +94,10 @@ class Phone(Field):
         :return: Raises 'ValueError' if the phone number format is invalid.
         """
         if re.findall(r'^\d{10}$', str(self.value.replace('+38', ''))):
-            print("Contacts updated.\n")
+            print(f"{Color.GREEN}Contacts updated.\n{Color.RESET}")
             return self.value
         else:
-            raise ValueError("Phone number must be 10 digits long.")
+            raise ValueError(f"{Color.RED}Phone number must be 10 digits long.\n{Color.RESET}")
 
 
 class Birthday(Field):
@@ -101,24 +116,60 @@ class Birthday(Field):
             if int(day) <= 31 and int(month) <= 12:
                 print("Birthday added.\n")
                 return date(int(year), int(month), int(day))
-            print("Birthday date must in this format 'DD.MM.YYYY'\n")
+            print(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'\n{Color.RESET}")
         else:
-            raise ValueError("Birthday date must in this format 'DD.MM.YYYY'")
+            raise ValueError(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'{Color.RESET}")
 
 
-# CLASS Address
+#CLASS Address
 class Address(Field):
     def __init__(self, country: str, city: str, street: str, house_number: str, apartment_number: str = ''):
-        super().__init__(
-            f"Country: {country}, City: {city}, Street: {street}, House_Number: {house_number}, Apartment_Number: {apartment_number}")
+        super().__init__(f"Country: {country}, City: {city}, Street: {street}, House_Number: {house_number}, Apartment_Number: {apartment_number}")
         self.country = country
         self.city = city
         self.street = street
         self.house_number = house_number
         self.apartment_number = apartment_number
-
+    
     def __str__(self):
         return f"Country: {self.country}, City: {self.city}, Street: {self.street}, House_Number: {self.house_number}, Apartment_Number: {self.apartment_number}"
+
+class Email(Field):
+    """
+    Class to store email addresses. Validates the email using a regular expression.
+    """
+
+    def __init__(self, value: str):
+        """
+        Initializes an Email object with a given value.
+        :param value:
+        """
+        super().__init__(value)
+        self.email = self.validate_email()
+
+    def validate_email(self):
+        """
+        Validates the email address using a regular expression.
+        :return: Raises 'ValueError' if the email format is invalid.
+        """
+        email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        if email_pattern.match(self.value):
+            return self.value
+        else:
+            # raise ValueError("Invalid email address.")
+            raise ValueError(f"{Color.RED}Invalid email address.{Color.RESET}")
+
+    def set_email(self, value: str):
+        """
+        Set a new email address and validate it.
+        :param value:
+        :return: None
+        """
+        self.value = value
+        self.email = self.validate_email()
+        
+    def __str__(self):
+        return f"Email: {self.email}"
 
 
 class Record:
@@ -135,7 +186,8 @@ class Record:
         self.phones = []
         self.birthday = 'Unknown'
         self.addresses = []  # Add addresses attribute
-
+        self.emails = []  # Add emails attribute
+        
     @data_validator
     def add_phone(self, phone: str):
         """
@@ -184,12 +236,46 @@ class Record:
     # Add addresses attribute
     def add_address(self, country, city, street, house_number, apartment_number):
         self.addresses.append(Address(country, city, street, house_number, apartment_number))
+        
+    @data_validator
+    def add_email(self, email: str):
+        """
+        Adds an email address to the contact.
+        :param email:
+        :return None:
+        """
+        try:
+            new_email = Email(email)
+            self.emails.append(new_email)
+            # print("Email added.")
+            print(f"{Color.GREEN}Email added.{Color.RESET}")
+        except ValueError as e:
+            # print(f"Error: {e}")
+            print(f"{Color.RED}Error{Color.RESET}: {e}")
+
+            
+    def edit_email(self, old_email: str, new_email: str):
+        """
+        Edits an email address in the email list.
+        :param old_email:
+        :param new_email:
+        :return None:
+        """
+        for e in self.emails:
+            if e.value == old_email:
+                e.set_email(new_email)
+                # print("Email updated.")
+                print(f"{Color.GREEN}Email updated.{Color.RESET}")
+                break
+        else:
+            # print("Old email not found.")
+            print(f"{Color.RED}Old email not found.{Color.RESET}")
+
 
     def __str__(self):
         phone_info = '; '.join([p.value for p in self.phones])
         birthday_info = self.birthday if self.birthday != "Unknown" else "Unknown"
-        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) if hasattr(self,
-                                                                                               'addresses') else "Unknown"
+        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) if hasattr(self, 'addresses') else "Unknown"
 
         return f"Contact name: {self.name}, phones: {phone_info}, birthday: {birthday_info}, addresses: {address_info}"
 
