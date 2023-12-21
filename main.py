@@ -332,7 +332,8 @@ def show_birthday(args, contacts: AddressBook):
     except IndexError:
         raise exceptions.ShowBirthdayIndexError
     if name in contacts:
-        print(f'{Color.YELLOW}{name.title()}{Color.RESET}\'s birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
+        print(
+            f'{Color.YELLOW}{name.title()}{Color.RESET}\'s birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
     else:
         raise exceptions.BirthdayKeyError
 
@@ -371,7 +372,7 @@ def add_email(args: list, contacts: AddressBook):
         user = contacts[name]
         user.add_email(email)
     else:
-        raise KeyError
+        raise AttributeError
     
 @exceptions.input_error
 def edit_email(args: list, contacts: AddressBook):
@@ -421,7 +422,8 @@ def main():
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
     commands_list = list(menu) + ["close", "exit", "good bye", 'hello']
     completer = WordCompleter(commands_list)
-    print(f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
+    print(
+        f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
     while True:
         user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
         command, *args = parse_input(user_input) if len(user_input) > 0 else " "
