@@ -160,12 +160,17 @@ def get_all_phones(args, contacts: AddressBook):
     :return all saved contacts:
     """
     data = []
-    headers = ["Name", "Phones", "Birthday", "Addresses"]
+    headers = ["Name", "Phones", "Emails", "Birthday", "Addresses"]
     if len(contacts) == 0:
         print(f"{Color.RED}There are still no entries in your notebook. Try making one.\n{Color.RESET}")
     else:
         for name, record in contacts.data.items():
-            data.append([name.title(), [phone.value for phone in record.phones], record.birthday, record.addresses])
+
+            addresses_str = '\n'.join([address.value for address in record.addresses])
+            phones_str = '\n'.join([phone.value for phone in record.phones])
+            email_str = '\n'.join([email.value for email in record.emails])
+
+            data.append([name.title(), phones_str, email_str, record.birthday, addresses_str])
         table = tabulate(data, headers=headers, tablefmt="fancy_grid")
         print(table)
 
@@ -233,17 +238,24 @@ def add_birthday(args, contacts: AddressBook):
     Adds a birthday to the user in contacts.
     :param args:
     :param contacts:
-    :return raise 'AttributeError' if the name does not exist in contact.:
+    :return raise 'AttributeError' if the name does not exist in contact.
+    :raise exceptions.BirthdayConflictError: if a birthday already exists for the user.
     """
     try:
         name, birthday = args
     except ValueError:
         raise exceptions.AddBirthdayValueError()
+    
     if name in contacts:
         user = contacts[name]
+        
+        if user.birthday != 'Unknown':
+            raise exceptions.BirthdayConflictError
+        
         user.add_birthday(birthday)
     else:
         raise exceptions.BirthdayKeyError
+
 
 
 @exceptions.input_error
@@ -272,13 +284,16 @@ def add_address(args: list, contacts: AddressBook):
     :param contacts:
     :return "Address added." if the addition was successful:
     """
-    name, country, city, street, house_number, apartment_number = args
+    try:
+        name, country, city, street, house_number = args
+    except ValueError:
+        raise exceptions.AddAddresssValueError()
     if name in contacts:
         user = contacts[name]
-        user.add_address(country, city, street, house_number, apartment_number)
+        user.add_address(country, city, street, house_number)
         print(f"{Color.GREEN}Address added.{Color.RESET}")
     else:
-        raise AttributeError
+        raise KeyError
 
 @exceptions.input_error
 def add_email(args: list, contacts: AddressBook):
@@ -287,13 +302,15 @@ def add_email(args: list, contacts: AddressBook):
     :param args:
     :param contacts:
     """
-    name, email = args
+    try:
+        name, email = args
+    except ValueError:
+        raise exceptions.AddEmailValueError()
     if name in contacts:
         user = contacts[name]
         user.add_email(email)
-        write_data(contacts)
     else:
-        raise AttributeError
+        raise KeyError
     
 @exceptions.input_error
 def edit_email(args: list, contacts: AddressBook):
@@ -302,14 +319,15 @@ def edit_email(args: list, contacts: AddressBook):
     :param args:
     :param contacts:
     """
-    name, old_email, new_email = args
+    try:
+        name, old_email, new_email = args
+    except ValueError:
+        raise exceptions.EditEmailValueError()
     if name in contacts:
         user = contacts[name]
         user.edit_email(old_email, new_email)
-        write_data(contacts)
     else:
-        raise AttributeError
-
+        raise KeyError
 
 # main block
 

@@ -1,4 +1,4 @@
-from address_book import AddressBook
+from address_book import AddressBook, Color
 
 
 class PhoneLengthError(Exception):
@@ -17,7 +17,23 @@ class BirthdayNotFoundError(Exception):
     pass
 
 
+class BirthdayConflictError(Exception):
+    pass
+
+
 class AddBirthdayValueError(Exception):
+    pass
+
+
+class AddAddresssValueError(Exception):
+    pass
+
+
+class AddEmailValueError(Exception):
+    pass
+
+
+class EditEmailValueError(Exception):
     pass
 
 
@@ -63,6 +79,14 @@ def input_error(func):
             print("Enter a valid command in format --->>> <change> <name> <old phone number> <new phone number>\n")
         except AddBirthdayValueError:
             print("Enter a valid command in this format --->>> <add-birthday> <name> <DD.MM.YYYY.>\n")
+        except BirthdayConflictError:
+            print(f"{Color.RED}Error{Color.RESET}: Birthday already exists for this contact.\n")
+        except AddAddresssValueError:
+            print("Enter a valid command in this format --->>> <add-address> <name> <country> <city> <street> <house_number>\n")
+        except AddEmailValueError:
+            print("Enter a valid command in this format --->>> <add-email> <name> <email>")
+        except EditEmailValueError:
+            print("Enter a valid command in this format --->>> <adit-email> <name> <old_email> <new_email>")
         except KeyError:
             print('This contact was not found in the system. Try again.\n')
         except ShowBirthdayIndexError:
