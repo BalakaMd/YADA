@@ -193,7 +193,7 @@ def find_by_address(args: list, contacts: AddressBook):
     try:
         address_to_find = args[0]
     except IndexError:
-        raise exceptions.FindAddressIndexError
+        raise exceptions.FindBirthdayIndexError
     
     data = []
     headers = ["Name", "Address"]

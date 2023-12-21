@@ -69,6 +69,10 @@ class FindAddressIndexError(Exception):
     pass
 
 
+class FindBirthdayIndexError(Exception):
+    pass
+
+
 # decorators block
 
 def input_error(func):
@@ -88,13 +92,13 @@ def input_error(func):
         except AddBirthdayValueError:
             print(f"{Color.RED}Enter a valid command in this format{Color.RESET} --->>> {Color.YELLOW}<add-birthday> <name> <DD.MM.YYYY.>\n{Color.RESET}")
         except BirthdayConflictError:
-            print(f"{Color.RED}Error{Color.RESET}: Birthday already exists for this contact.\n")
+            print(f"{Color.RED}Birthday already exists for this contact.{Color.RESET}\n")
         except AddAddresssValueError:
-            print("Enter a valid command in this format --->>> <add-address> <name> <country> <city> <street> <house_number>\n")
+            print(f"{Color.RED}Enter a valid command in this format{Color.RESET} --->>> {Color.YELLOW}<add-address> <name> <country> <city> <street> <house_number>\n{Color.RESET}")
         except AddEmailValueError:
-            print("Enter a valid command in this format --->>> <add-email> <name> <email>")
+            print(f"{Color.RED}Enter a valid command in this format{Color.RESET} --->>> {Color.YELLOW}<add-email> <name> <email>\n{Color.RESET}")
         except EditEmailValueError:
-            print("Enter a valid command in this format --->>> <adit-email> <name> <old_email> <new_email>")
+            print(f"{Color.RED}Enter a valid command in this format{Color.RESET} --->>> {Color.YELLOW}<adit-email> <name> <old_email> <new_email>\n{Color.RESET}")
         except KeyError:
             print(f"{Color.RED}This contact was not found in the system. Try again.\n{Color.RESET}")
         except ShowBirthdayIndexError:
@@ -104,9 +108,11 @@ def input_error(func):
         except FindNameIndexError:
             print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-name> <phone>\n{Color.RESET}")
         except FindEmailIndexError:
-            print("Enter a command in this format --->>> <find-email> <email>\n")
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-email> <email>\n{Color.RESET}")
         except FindAddressIndexError:
-            print("Enter a command in this format --->>> <find-address> <country> <city> <street> <house_number>\n")
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-address> <city>\n{Color.RESET}")
+        except FindBirthdayIndexError:
+            print(f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<find-birthday> <DD.MM.YYYY.>\n{Color.RESET}")
         except PhoneLengthError:
             print(f"{Color.RED}Phone number must be 10 digits long\n{Color.RESET}")
         except BirthdayFormatError:
