@@ -218,7 +218,7 @@ def user_help(*args, **kwargs):
         [12, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
         [13, 'delete-note', '<id>', "Deleting note from user's notebook."],
         [14, 'search-notes', '<query>', "Searching notes in user's notebook by specified query."],
-        [15, 'close/Exit', '', "Exit the program."]
+        [15, 'close/Exit', '', "Exit the program."],
         [16, 'add-email', '<name> <email address>', "Adding an email to the contact."],
         [17, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address"]
     ]
@@ -259,7 +259,8 @@ def show_birthday(args, contacts: AddressBook):
     except IndexError:
         raise exceptions.ShowBirthdayIndexError
     if name in contacts:
-        print(f'{Color.YELLOW}{name.title()}{Color.RESET}\'s birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
+        print(
+            f'{Color.YELLOW}{name.title()}{Color.RESET}\'s birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
     else:
         raise exceptions.BirthdayKeyError
 
@@ -280,6 +281,7 @@ def add_address(args: list, contacts: AddressBook):
     else:
         raise AttributeError
 
+
 @exceptions.input_error
 def add_email(args: list, contacts: AddressBook):
     """
@@ -294,7 +296,8 @@ def add_email(args: list, contacts: AddressBook):
         write_data(contacts)
     else:
         raise AttributeError
-    
+
+
 @exceptions.input_error
 def edit_email(args: list, contacts: AddressBook):
     """
@@ -340,7 +343,8 @@ def main():
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
     commands_list = list(menu) + ["close", "exit", "good bye", 'hello']
     completer = WordCompleter(commands_list)
-    print(f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
+    print(
+        f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
     while True:
         user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
         command, *args = parse_input(user_input) if len(user_input) > 0 else " "
