@@ -114,25 +114,24 @@ class Birthday(Field):
         if date_pattern.match(self.value):
             day, month, year = self.value.split('.')
             if int(day) <= 31 and int(month) <= 12:
-                print("Birthday added.\n")
+                print(f"{Color.GREEN}Birthday added.{Color.RESET}\n")
                 return date(int(year), int(month), int(day))
             print(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'\n{Color.RESET}")
         else:
             raise ValueError(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'{Color.RESET}")
 
 
-#CLASS Address
 class Address(Field):
-    def __init__(self, country: str, city: str, street: str, house_number: str, apartment_number: str = ''):
-        super().__init__(f"Country: {country}, City: {city}, Street: {street}, House_Number: {house_number}, Apartment_Number: {apartment_number}")
+    def __init__(self, country: str, city: str, street: str, house_number: str):
+        super().__init__(f"Country: {country}, City: {city}, Street: {street}, House_Number: {house_number}")
         self.country = country
         self.city = city
         self.street = street
         self.house_number = house_number
-        self.apartment_number = apartment_number
     
     def __str__(self):
-        return f"Country: {self.country}, City: {self.city}, Street: {self.street}, House_Number: {self.house_number}, Apartment_Number: {self.apartment_number}"
+        return f"Country: {self.country}, City: {self.city}, Street: {self.street}, House_Number: {self.house_number}"
+
 
 class Email(Field):
     """
@@ -184,9 +183,9 @@ class Record:
         """
         self.name = Name(name.lower())
         self.phones = []
+        self.emails = []  # Add emails attribute
         self.birthday = 'Unknown'
         self.addresses = []  # Add addresses attribute
-        self.emails = []  # Add emails attribute
         
     @data_validator
     def add_phone(self, phone: str):
@@ -233,9 +232,9 @@ class Record:
     def add_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
 
-    # Add addresses attribute
-    def add_address(self, country, city, street, house_number, apartment_number):
-        self.addresses.append(Address(country, city, street, house_number, apartment_number))
+    @data_validator
+    def add_address(self, country, city, street, house_number):
+        self.addresses.append(Address(country, city, street, house_number))
         
     @data_validator
     def add_email(self, email: str):
@@ -247,13 +246,11 @@ class Record:
         try:
             new_email = Email(email)
             self.emails.append(new_email)
-            # print("Email added.")
             print(f"{Color.GREEN}Email added.{Color.RESET}")
         except ValueError as e:
-            # print(f"Error: {e}")
             print(f"{Color.RED}Error{Color.RESET}: {e}")
 
-            
+    @data_validator        
     def edit_email(self, old_email: str, new_email: str):
         """
         Edits an email address in the email list.
@@ -274,10 +271,11 @@ class Record:
 
     def __str__(self):
         phone_info = '; '.join([p.value for p in self.phones])
+        email_info = '; '.join([p.value for p in self.emails])
         birthday_info = self.birthday if self.birthday != "Unknown" else "Unknown"
         address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) if hasattr(self, 'addresses') else "Unknown"
 
-        return f"Contact name: {self.name}, phones: {phone_info}, birthday: {birthday_info}, addresses: {address_info}"
+        return f"Contact name: {self.name}, phones: {phone_info}, email: {email_info}, birthday: {birthday_info}, addresses: {address_info}"
 
 
 class AddressBook(UserDict):
@@ -325,6 +323,33 @@ class AddressBook(UserDict):
             if str(record.birthday) == birthday:
                 matching_records.append(record)
 
+        return matching_records
+    
+    def find_by_email(self, email):
+        """
+        Finds records in the address book by email.
+        :param birthday: A string representing the email.
+        :return returns a list of contact information:
+        """
+        matching_records = []
+        for record in self.data.values():
+            for record_email in record.emails:
+                if str(record_email.value.lower()) == email.lower():
+                    matching_records.append(record)
+        return matching_records
+
+
+    def find_by_address(self, address):
+        """
+        Finds records in the address book by address.
+        :param birthday: A string representing the address.
+        :return returns a list of contact information:
+        """
+        matching_records = []
+        for record in self.data.values():
+            for record_address in record.addresses:
+                if record_address.city.lower() == address.lower():
+                    matching_records.append(record)
         return matching_records
 
     def delete(self, name: str):
