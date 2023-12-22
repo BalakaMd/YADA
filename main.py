@@ -292,7 +292,8 @@ def user_help(*args, **kwargs):
     """
     data = [
         [1, "add", "<name> <phone number>", "Adding a new contact to the contacts"],
-        [2, "change", "<name> <old p_number>\n <new p_number>", "Stores in memory a new phone number for the username."],
+        [2, "change", "<name> <old p_number>\n <new p_number>",
+         "Stores in memory a new phone number for the username."],
         [3, "find-phone", "<name>", "Return the name and phone number of contact."],
         [4, "find-name", "<phone>", "Returns the phone number and the contact to whom it belongs."],
         [5, "find-email", "<email>", "Returns the email and the contact to whom it belongs."],
