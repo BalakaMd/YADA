@@ -2,7 +2,8 @@ import pickle
 from datetime import datetime
 from address_book import AddressBook, Record, Color
 from birthday_reminder import get_birthdays_per_week
-from notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, search_notes_by_text, show_all_notes
+from notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, \
+    search_notes_by_text, show_all_notes
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate
@@ -47,6 +48,26 @@ def add_contact(args: list, contacts: AddressBook):
 
 
 @exceptions.input_error
+def remove_contact(args: list, contacts: AddressBook):
+    """
+    Removing a contact from the contact AddressBook if exist .
+    :param args:
+    :param contacts:
+    :return None:
+    """
+    try:
+        name = args[0]
+    except IndexError:
+        raise exceptions.RemoveContactIndexError
+
+    if name in contacts:
+        contacts.delete(name)
+        print(f"{Color.GREEN}Contact was deleted successfully.{Color.RESET}\n")
+    else:
+        raise KeyError
+
+
+@exceptions.input_error
 def change_contact(args: list, contacts: AddressBook):
     """
     Stores in memory a new phone number for the username contact that already exists in the AddressBook.
@@ -77,8 +98,8 @@ def find_by_name(args: list, contacts: AddressBook):
     KeyError if the contact does not exist
     :param args:
     :param contacts:
-    :return The name and phone number if the contact is found.
-    Return KeyError if the contact does not exist :
+    return The name and phone number if the contact is found.
+    KeyError if the contact does not exist :
     """
     data = []
     headers = ["Name", "Phone"]
@@ -101,8 +122,8 @@ def find_by_phone(args: list, contacts: AddressBook):
     KeyError if the contact does not exist
     :param args:
     :param contacts:
-    :return The name and phone number if the contact is found.
-    Return KeyError if the contact does not exist :
+    return The name and phone number if the contact is found.
+    KeyError if the contact does not exist :
     """
     try:
         if len(args[0]) != 10:
@@ -128,8 +149,8 @@ def find_by_birthday(args: list, contacts: AddressBook):
     KeyError if the contact does not exist or if the date format is invalid.
     :param args:
     :param contacts:
-    :return The name and phone number if the contact is found.
-    Return KeyError if the contact does not exist or if the date format is invalid.
+    return The name and phone number if the contact is found.
+    KeyError if the contact does not exist or if the date format is invalid.
     """
     try:
         datetime.strptime(args[0], '%d.%m.%Y')
@@ -158,8 +179,8 @@ def find_by_email(args: list, contacts: AddressBook):
     KeyError if the contact does not exist.
     :param args:
     :param contacts:
-    :return The name and birthday if the contact is found.
-    Return KeyError if the contact does not exist.
+    return The name and birthday if the contact is found.
+    KeyError if the contact does not exist.
     """
     try:
         email_to_find = args[0]
@@ -187,21 +208,22 @@ def find_by_address(args: list, contacts: AddressBook):
     KeyError if the contact does not exist.
     :param args:
     :param contacts:
-    :return The name and birthday if the contact is found.
-    Return KeyError if the contact does not exist.
+    return The name and birthday if the contact is found.
+    KeyError if the contact does not exist.
     """
     try:
         address_to_find = args[0]
     except IndexError:
         raise exceptions.FindBirthdayIndexError
-    
+
     data = []
     headers = ["Name", "Address"]
     results = contacts.find_by_address(address_to_find)
 
     if results:
         for result in results:
-            search_address = '\n'.join([address.value for address in result.addresses if address_to_find.lower() in address.value.lower()])
+            search_address = '\n'.join(
+                [address.value for address in result.addresses if address_to_find.lower() in address.value.lower()])
             data.append([result.name.value.capitalize(), search_address])
     else:
         raise KeyError
@@ -224,7 +246,6 @@ def get_all_phones(args, contacts: AddressBook):
         print(f"{Color.RED}There are still no entries in your notebook. Try making one.\n{Color.RESET}")
     else:
         for name, record in contacts.data.items():
-
             addresses_str = '\n'.join([address.value for address in record.addresses])
             phones_str = '\n'.join([phone.value for phone in record.phones])
             email_str = '\n'.join([email.value for email in record.emails])
@@ -285,8 +306,8 @@ def user_help(*args, **kwargs):
         [16, 'search-notes-by-text', '<query>', "Searching notes in user's notebook by specified query."],
         [17, 'add-email', '<name> <email address>', "Adding an email to the contact."],
         [18, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address."],
-        [19, 'add-tag', '<note id> <tag>', 'Adds tag to choosen note.'],
-        [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of choosen note.'],
+        [19, 'add-tag', '<note id> <tag>', 'Adds tag to chosen note.'],
+        [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of chosen note.'],
         [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
         [22, 'close/Exit', '', "Exit the program."]
 
@@ -302,24 +323,22 @@ def add_birthday(args, contacts: AddressBook):
     Adds a birthday to the user in contacts.
     :param args:
     :param contacts:
-    :return raise 'AttributeError' if the name does not exist in contact.
     :raise exceptions.BirthdayConflictError: if a birthday already exists for the user.
     """
     try:
         name, birthday = args
     except ValueError:
         raise exceptions.AddBirthdayValueError()
-    
+
     if name in contacts:
         user = contacts[name]
-        
+
         if user.birthday != 'Unknown':
             raise exceptions.BirthdayConflictError
-        
+
         user.add_birthday(birthday)
     else:
         raise exceptions.BirthdayKeyError
-
 
 
 @exceptions.input_error
@@ -336,7 +355,8 @@ def show_birthday(args, contacts: AddressBook):
         raise exceptions.ShowBirthdayIndexError
     if name in contacts:
         print(
-            f'{Color.YELLOW}{name.title()}{Color.RESET}\'s birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
+            f'{Color.YELLOW}{name.title()}{Color.RESET}\'s'
+            f' birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
     else:
         raise exceptions.BirthdayKeyError
 
@@ -352,13 +372,14 @@ def add_address(args: list, contacts: AddressBook):
     try:
         name, country, city, street, house_number = args
     except ValueError:
-        raise exceptions.AddAddresssValueError()
+        raise exceptions.AddAddressValueError()
     if name in contacts:
         user = contacts[name]
         user.add_address(country, city, street, house_number)
         print(f"{Color.GREEN}Address added.{Color.RESET}")
     else:
         raise KeyError
+
 
 @exceptions.input_error
 def add_email(args: list, contacts: AddressBook):
@@ -376,7 +397,8 @@ def add_email(args: list, contacts: AddressBook):
         user.add_email(email)
     else:
         raise AttributeError
-    
+
+
 @exceptions.input_error
 def edit_email(args: list, contacts: AddressBook):
     """
@@ -394,6 +416,7 @@ def edit_email(args: list, contacts: AddressBook):
     else:
         raise KeyError
 
+
 # main block
 
 def main():
@@ -401,6 +424,7 @@ def main():
     notebook = Notebook()
     address_book_menu = {
         "add": add_contact,
+        'remove': remove_contact,
         "change": change_contact,
         "find-name": find_by_name,
         "find-phone": find_by_phone,
@@ -431,11 +455,12 @@ def main():
     commands_list = list(menu) + ["close", "exit", "good bye", 'hello']
     completer = WordCompleter(commands_list)
     print(
-        f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
+        f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET}"
+        f" to see all commands.\n")
     while True:
         try:
             user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
-        except KeyboardInterrupt: 
+        except KeyboardInterrupt:
             print(f"You pressed Ctrl+C! Exiting. {Color.YELLOW_BOLD}Good bye!{Color.RESET}")
             write_data(contacts)
             notebook.save_notes()
