@@ -34,7 +34,8 @@ def get_birthdays_per_week(args: list, contacts: AddressBook):
         delta_days = (birthday_this_year - today_date).days
         if delta_days < sought_interval:
             if birthday_this_year.weekday() in [5, 6]:
-                birthdays_this_week["Monday"].append(f"{birthday_this_year.strftime('%d/%m')}--> {name}".title())
+                birthdays_this_week["Monday"].append(birthday_this_year.strftime('%d/%m'))
+                birthdays_this_week["Monday"].append(name.title())
             else:
                 birthdays_this_week[birthday_this_year.strftime("%A")].append(birthday_this_year.strftime("%d/%m"))
                 birthdays_this_week[birthday_this_year.strftime("%A")].append(name.title())
