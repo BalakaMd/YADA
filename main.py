@@ -8,6 +8,8 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate
 import exceptions
+from logo import logo
+from jokes import get_joke
 
 
 # function block
@@ -22,6 +24,7 @@ def parse_input(user_input: str):
     """
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
+    args = [arg.lower() for arg in args]
     return cmd, *args
 
 
@@ -289,7 +292,7 @@ def user_help(*args, **kwargs):
     """
     data = [
         [1, 'add', '<name> <phone number>', 'Adding a new contact to the contacts'],
-        [2, 'change', '<name> <old p_number> <new p_number>', 'Stores in memory a new phone number for the username.'],
+        [2, 'change', '<name> <old p_number>\n <new p_number>', 'Stores in memory a new phone number for the username.'],
         [3, 'find-phone', '<name>', 'Return the name and phone number of contact.'],
         [4, 'find-name', '<phone>', 'Returns the phone number and the contact to whom it belongs.'],
         [5, 'find-email', '<email>', 'Returns the email and the contact to whom it belongs.'],
@@ -299,13 +302,13 @@ def user_help(*args, **kwargs):
         [9, 'add-birthday', '<name> <DD.MM.YYYY>', 'Adding a birthday date to the contact.'],
         [10, 'show-birthday', '<name>', 'Return birthday of the requested user from contacts.'],
         [11, 'birthdays', '', 'Print a list of people who need to be greeted by days in the n_week.'],
-        [12, 'add-address', '<name> <country> <city> <...>', 'Adding an address to the contact.'],
+        [12, 'add-address', '<name> <country> <city>\n <street> <house_number>', 'Adding an address to the contact.'],
         [13, 'add-note', '<text>', "Adding note to user's notebook."],
         [14, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
         [15, 'delete-note', '<id>', "Deleting note from user's notebook."],
         [16, 'search-notes-by-text', '<query>', "Searching notes in user's notebook by specified query."],
         [17, 'add-email', '<name> <email address>', "Adding an email to the contact."],
-        [18, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address."],
+        [18, 'edit-email', '<name> <old email address>\n <new email address>', "Changes the email address."],
         [19, 'add-tag', '<note id> <tag>', 'Adds tag to chosen note.'],
         [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of chosen note.'],
         [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
@@ -376,7 +379,7 @@ def add_address(args: list, contacts: AddressBook):
     if name in contacts:
         user = contacts[name]
         user.add_address(country, city, street, house_number)
-        print(f"{Color.GREEN}Address added.{Color.RESET}")
+        print(f"{Color.GREEN}Address added.{Color.RESET}\n")
     else:
         raise KeyError
 
@@ -452,8 +455,9 @@ def main():
 
     }
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
-    commands_list = list(menu) + ["close", "exit", "good bye", 'hello']
+    commands_list = list(menu) + ["close", "exit", "good bye", 'hello', 'tell-a-joke']
     completer = WordCompleter(commands_list)
+    print(logo)
     print(
         f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET}"
         f" to see all commands.\n")
@@ -479,6 +483,8 @@ def main():
         elif command in notebook_menu:
             notebook_menu[command](notebook, args)
             notebook.save_notes()
+        elif command == 'tell-a-joke':
+            print(f'{Color.YELLOW_BOLD}{get_joke()}{Color.RESET}\n')
         else:
             print(f"{Color.RED}Invalid command. Print 'Help' to see all commands.\n{Color.RESET}")
 

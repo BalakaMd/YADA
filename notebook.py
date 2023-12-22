@@ -63,7 +63,7 @@ class Notebook:
                     note_id, text = note_line.split(":", 1)
                     self.notes.append(Note(text=text, note_id=int(note_id), tags=tags))
         except FileNotFoundError:
-            print(f"File with notes {NOTES_FILE_NAME} doesn't exist!")
+            print(f"{Color.RED}File with notes {NOTES_FILE_NAME} doesn't exist! A new one was created{Color.RESET}")
 
     def find_note_by_id(self, note_id):
         """
@@ -91,7 +91,7 @@ def add_note(notebook, args):
         text = args[0]
         new_id = max([note.id for note in notebook.notes], default=0) + 1
         notebook.notes.append(Note(text, new_id))
-        print(f"Note was added under the id:{new_id}.")
+        print(f"{Color.GREEN}Note was added under the id:{new_id}.{Color.RESET}\n")
         notebook.save_notes()
     except (ValueError, IndexError):
         raise AddNoteError
@@ -135,7 +135,7 @@ def search_notes_by_text(notebook, args):
                 print(f"Tags: {tags_str}\n{note.id}:{note.text}")
                 count += 1
         if count == 0:
-            print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}")
+            print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}\n")
     except (ValueError, IndexError):
         raise SearchNoteByTextError
 
@@ -154,7 +154,7 @@ def search_notes_by_tag(notebook, args):
             for tag in note.tags:
                 if str(tag.lower()) == args[0].lower():
                     tags_str = ", ".join(note.tags)
-                    print(f"Tags: {tags_str}\n{note.id}:{note.text}\n")
+                    print(f"{Color.CYAN}Tags: {tags_str}\n{note.id}:{note.text}{Color.RESET}\n")
                     count += 1
         if count == 0:
             print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}")
@@ -190,7 +190,7 @@ def show_all_notes(notebook, args):
     :return None:
     """
     if not notebook.notes:
-        print("There are no notes in the notebook.")
+        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}")
         return
     for note in notebook.notes:
         tags_str = ''
@@ -213,7 +213,7 @@ def add_tag_to_note(notebook, args):
         if note:
             note.add_tag(tag)
             notebook.save_notes()
-            print(f"Tag '{tag}' added to note ID {note_id}.")
+            print(f"{Color.GREEN}Tag '{tag}' added to note ID {note_id}.{Color.RESET}\n")
         else:
             print(f"Note with ID {note_id} not found.")
     except (ValueError, IndexError):
