@@ -73,7 +73,61 @@ class FindBirthdayIndexError(Exception):
     pass
 
 
+class AddNoteError(Exception):
+    pass
+
+
+class EditNoteError(Exception):
+    pass
+
+
+class SearchNoteByTextError(Exception):
+    pass
+
+
+class SearchNoteByTagError(Exception):
+    pass
+
+
+class DeleteNoteError(Exception):
+    pass
+
+
+class AddTagError(Exception):
+    pass
+
+
+class DeleteTagError(Exception):
+    pass
+
 # decorators block
+
+def input_note_error(func):
+    """
+    Handles exception 'ValueError', 'IndexError' on user input for note functionality.
+    :param func:
+    :return wrapper:
+    """
+
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except (AddNoteError):
+            print(f"{Color.RED}Enter a valid command in this format {Color.RESET}--->>> {Color.YELLOW}add-note <text>\n{Color.RESET}")
+        except (EditNoteError):
+            print(f"{Color.RED}Enter a valid command in format {Color.RESET}--->>> {Color.YELLOW}edit-note <note id> <new text>\n{Color.RESET}")
+        except (DeleteNoteError):
+            print(f"{Color.RED}Enter a valid command in format {Color.RESET}--->>> {Color.YELLOW}delete-note <note id>\n{Color.RESET}")
+        except (SearchNoteByTextError):
+            print(f"{Color.RED}Enter a valid command in format {Color.RESET}--->>> {Color.YELLOW}search-notes-by-text <query>\n{Color.RESET}")
+        except (SearchNoteByTagError):
+            print(f"{Color.RED}Enter a valid command in format {Color.RESET}--->>> {Color.YELLOW}search-notes-by-tag <tag>\n{Color.RESET}")
+        except (AddTagError):
+            print(f"{Color.RED}Enter a valid command in format {Color.RESET}--->>> {Color.YELLOW}add-tag <note id> <tag>\n{Color.RESET}")
+        except (DeleteTagError):
+            print(f"{Color.RED}Enter a valid command in format {Color.RESET}--->>> {Color.YELLOW}delete-tag <note id> <tag>\n{Color.RESET}")
+
+    return inner
 
 def input_error(func):
     """
