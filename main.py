@@ -312,7 +312,8 @@ def user_help(*args, **kwargs):
         [19, 'add-tag', '<note id> <tag>', 'Adds tag to chosen note.'],
         [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of chosen note.'],
         [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
-        [22, 'close/Exit', '', "Exit the program."]
+        [22, 'all-notes', '', "Print all notes for the user."],
+        [23, 'close/Exit', '', "Exit the program."]
 
     ]
     headers = ["#", "Command", "Arguments", "Description"]
