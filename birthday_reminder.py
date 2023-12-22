@@ -19,7 +19,8 @@ def get_birthdays_per_week(args: list, contacts: AddressBook):
         sought_interval = 7 if not args else int(args[0])
     except ValueError:
         print(
-            f"{Color.RED}Enter a command in this format{Color.RESET} --->>> {Color.YELLOW}<birthday> <*sought_interval>{Color.RESET}\n")
+            f"{Color.RED}Enter a command in this format{Color.RESET} --->>>"
+            f" {Color.YELLOW}<birthday> <*sought_interval>{Color.RESET}\n")
         return None
     for u_name, record in contacts.data.items():
         name = u_name
@@ -33,7 +34,7 @@ def get_birthdays_per_week(args: list, contacts: AddressBook):
         delta_days = (birthday_this_year - today_date).days
         if delta_days < sought_interval:
             if birthday_this_year.weekday() in [5, 6]:
-                birthdays_this_week["Monday"].append(f"{birthday_this_year.strftime("%d/%m")}--> {name}".title())
+                birthdays_this_week["Monday"].append(f"{birthday_this_year.strftime('%d/%m')}--> {name}".title())
             else:
                 birthdays_this_week[birthday_this_year.strftime("%A")].append(birthday_this_year.strftime("%d/%m"))
                 birthdays_this_week[birthday_this_year.strftime("%A")].append(name.title())
