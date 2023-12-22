@@ -109,7 +109,7 @@ class DeleteTagError(Exception):
 
 def input_note_error(func):
     """
-    Handles exception 'ValueError', 'IndexError' on user input for note functionality.
+    Handles exception "ValueError", "IndexError" on user input for note functionality.
     :param func:
     :return wrapper:
     """
@@ -151,7 +151,7 @@ def input_note_error(func):
 
 def input_error(func):
     """
-    Handles exception 'ValueError', 'KeyError', 'IndexError', 'AttributeError' on user input.
+    Handles exception "ValueError", "KeyError", "IndexError", "AttributeError" on user input.
     :param func:
     :return wrapper:
     """
@@ -234,7 +234,7 @@ def input_error(func):
 
 def open_file_error(func):
     """
-    Handles exception 'FileNotFoundError' when trying to open a non-existent file.
+    Handles exception "FileNotFoundError" when trying to open a non-existent file.
     :param func:
     :return wrapper:
     """
