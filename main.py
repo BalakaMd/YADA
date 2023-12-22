@@ -2,7 +2,7 @@ import pickle
 from datetime import datetime
 from address_book import AddressBook, Record, Color
 from birthday_reminder import get_birthdays_per_week
-from notebook import Notebook, add_note, delete_note, edit_note, search_notes
+from notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, search_notes_by_text, show_all_notes
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate
@@ -268,8 +268,7 @@ def user_help(*args, **kwargs):
     """
     data = [
         [1, 'add', '<name> <phone number>', 'Adding a new contact to the contacts'],
-        [2, 'change', '<name> <old p_number> <new p_number>',
-         'Stores in memory a new phone number for the username.'],
+        [2, 'change', '<name> <old p_number> <new p_number>', 'Stores in memory a new phone number for the username.'],
         [3, 'find-phone', '<name>', 'Return the name and phone number of contact.'],
         [4, 'find-name', '<phone>', 'Returns the phone number and the contact to whom it belongs.'],
         [5, 'find-email', '<email>', 'Returns the email and the contact to whom it belongs.'],
@@ -283,10 +282,14 @@ def user_help(*args, **kwargs):
         [13, 'add-note', '<text>', "Adding note to user's notebook."],
         [14, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
         [15, 'delete-note', '<id>', "Deleting note from user's notebook."],
-        [16, 'search-notes', '<query>', "Searching notes in user's notebook by specified query."],
-        [17, 'close/Exit', '', "Exit the program."]
-        [18, 'add-email', '<name> <email address>', "Adding an email to the contact."],
-        [19, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address"]
+        [16, 'search-notes-by-text', '<query>', "Searching notes in user's notebook by specified query."],
+        [17, 'add-email', '<name> <email address>', "Adding an email to the contact."],
+        [18, 'edit-email', '<name> <old email address> <new email address>', "Changes the email address."],
+        [19, 'add-tag', '<note id> <tag>', 'Adds tag to choosen note.'],
+        [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of choosen note.'],
+        [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
+        [22, 'close/Exit', '', "Exit the program."]
+
     ]
     headers = ["#", "Command", "Arguments", "Description"]
     table = tabulate(data, headers=headers, tablefmt="fancy_grid")
@@ -416,8 +419,13 @@ def main():
     notebook_menu = {
         "add-note": add_note,
         "edit-note": edit_note,
-        "search-notes": search_notes,
-        "delete-note": delete_note
+        "search-notes-by-text": search_notes_by_text,
+        "search-notes-by-tag": search_notes_by_tag,
+        "delete-note": delete_note,
+        "all-notes": show_all_notes,
+        "add-tag": add_tag_to_note,
+        "delete-tag": delete_tag
+
     }
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
     commands_list = list(menu) + ["close", "exit", "good bye", 'hello']
@@ -425,7 +433,13 @@ def main():
     print(
         f"{Color.MAGENTA_BOLD}Welcome to the assistant bot!{Color.RESET}\nPrint {Color.YELLOW_BOLD}'Help'{Color.RESET} to see all commands.\n")
     while True:
-        user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
+        try:
+            user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
+        except KeyboardInterrupt: 
+            print(f"You pressed Ctrl+C! Exiting. {Color.YELLOW_BOLD}Good bye!{Color.RESET}")
+            write_data(contacts)
+            notebook.save_notes()
+            break
         command, *args = parse_input(user_input) if len(user_input) > 0 else " "
         if command in ["close", "exit", "good bye"]:
             print(f"{Color.YELLOW_BOLD}Good bye!{Color.RESET}")
