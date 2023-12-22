@@ -257,3 +257,23 @@ def delete_tag(notebook, args):
             print(f"Note with ID {note_id} not found.")
     except (ValueError, IndexError):
         raise DeleteTagError
+    
+
+def sort_notes_by_tags(notebook, args):
+    """
+    Sorts notes by their tags and prints them.
+    """
+    if not notebook.notes:
+        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}")
+        return
+    sorted_by_tags = {}
+    for note in notebook.notes:
+        for tag in note.tags:
+            if tag not in sorted_by_tags:
+                sorted_by_tags[tag] = []
+            sorted_by_tags[tag].append(note)
+
+    for tag, notes in sorted_by_tags.items():
+        print(f"{Color.GREEN}Tag: {tag}{Color.RESET}")
+        for note in notes:
+            print(f" - ID: {note.id}, Text: {note.text}")
