@@ -314,7 +314,8 @@ def user_help(*args, **kwargs):
         [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
         [22, 'all-notes', '', "Prints all notes for the user."],
         [23, 'sort-notes', '', "Prints all notes sorted by tags."],
-        [24, 'close/Exit', '', "Exit the program."]
+        [24, 'close/Exit', '', "Exit the program."],
+        [25, 'tell-a-joke', '', "Returns a random joke."]
 
     ]
     headers = ["#", "Command", "Arguments", "Description"]
