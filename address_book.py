@@ -2,7 +2,8 @@ from collections import UserDict
 from datetime import date
 import re
 
-#Colors
+
+# Colors
 class Color:
     RESET = "\033[0m"
     RED = "\033[91m"
@@ -12,11 +13,12 @@ class Color:
     PURPLE = "\033[95m"
     CYAN = "\033[96m"
     WHITE = "\033[97m"
-    YELLOW_BOLD = "\033[93;1m"  
-    BLUE_BOLD = "\033[94;1m"    
-    MAGENTA_BOLD = "\033[95;1m" 
-    CYAN_BOLD = "\033[96;1m"    
-    WHITE_BOLD = "\033[97;1m" 
+    YELLOW_BOLD = "\033[93;1m"
+    BLUE_BOLD = "\033[94;1m"
+    MAGENTA_BOLD = "\033[95;1m"
+    CYAN_BOLD = "\033[96;1m"
+    WHITE_BOLD = "\033[97;1m"
+
 
 def data_validator(func):
     """
@@ -128,7 +130,7 @@ class Address(Field):
         self.city = city
         self.street = street
         self.house_number = house_number
-    
+
     def __str__(self):
         return f"Country: {self.country}, City: {self.city}, Street: {self.street}, House_Number: {self.house_number}"
 
@@ -166,7 +168,7 @@ class Email(Field):
         """
         self.value = value
         self.email = self.validate_email()
-        
+
     def __str__(self):
         return f"Email: {self.email}"
 
@@ -186,7 +188,7 @@ class Record:
         self.emails = []  # Add emails attribute
         self.birthday = 'Unknown'
         self.addresses = []  # Add addresses attribute
-        
+
     @data_validator
     def add_phone(self, phone: str):
         """
@@ -235,7 +237,7 @@ class Record:
     @data_validator
     def add_address(self, country, city, street, house_number):
         self.addresses.append(Address(country, city, street, house_number))
-        
+
     @data_validator
     def add_email(self, email: str):
         """
@@ -250,7 +252,7 @@ class Record:
         except ValueError as e:
             print(f"{Color.RED}Error{Color.RESET}: {e}")
 
-    @data_validator        
+    @data_validator
     def edit_email(self, old_email: str, new_email: str):
         """
         Edits an email address in the email list.
@@ -268,14 +270,15 @@ class Record:
             # print("Old email not found.")
             print(f"{Color.RED}Old email not found.{Color.RESET}")
 
-
     def __str__(self):
         phone_info = '; '.join([p.value for p in self.phones])
         email_info = '; '.join([p.value for p in self.emails])
         birthday_info = self.birthday if self.birthday != "Unknown" else "Unknown"
-        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) if hasattr(self, 'addresses') else "Unknown"
+        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) \
+            if hasattr(self, 'addresses') else "Unknown"
 
-        return f"Contact name: {self.name}, phones: {phone_info}, email: {email_info}, birthday: {birthday_info}, addresses: {address_info}"
+        return (f"Contact name: {self.name}, phones: {phone_info},"
+                f" email: {email_info}, birthday: {birthday_info}, addresses: {address_info}")
 
 
 class AddressBook(UserDict):
@@ -324,11 +327,11 @@ class AddressBook(UserDict):
                 matching_records.append(record)
 
         return matching_records
-    
+
     def find_by_email(self, email):
         """
         Finds records in the address book by email.
-        :param birthday: A string representing the email.
+        :param email: A string representing the email.
         :return returns a list of contact information:
         """
         matching_records = []
@@ -338,11 +341,10 @@ class AddressBook(UserDict):
                     matching_records.append(record)
         return matching_records
 
-
     def find_by_address(self, address):
         """
         Finds records in the address book by address.
-        :param birthday: A string representing the address.
+        :param address: A string representing the address.
         :return returns a list of contact information:
         """
         matching_records = []
