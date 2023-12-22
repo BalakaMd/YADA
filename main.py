@@ -18,9 +18,9 @@ from jokes import get_joke
 def parse_input(user_input: str):
     """
     Takes a string of user input and splits it into words using the split() method.
-    It returns the first word as the command 'cmd' and the rest as a list of arguments *args.
+    It returns the first word as the command "cmd" and the rest as a list of arguments *args.
     :param user_input:
-    :return the first word as 'cmd' and the rest as a list of arguments:
+    :return the first word as "cmd" and the rest as a list of arguments:
     """
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
@@ -156,7 +156,7 @@ def find_by_birthday(args: list, contacts: AddressBook):
     KeyError if the contact does not exist or if the date format is invalid.
     """
     try:
-        datetime.strptime(args[0], '%d.%m.%Y')
+        datetime.strptime(args[0], "%d.%m.%Y")
     except ValueError:
         raise exceptions.BirthdayFormatError
     except IndexError:
@@ -259,10 +259,10 @@ def get_all_phones(args, contacts: AddressBook):
 
 
 @exceptions.open_file_error
-def read_data(path='data'):
+def read_data(path="data"):
     """
-    Read users from the given file using 'pickle' package.
-    By default, path = 'data'.
+    Read users from the given file using "pickle" package.
+    By default, path = "data".
     :param path:
     :return AddressBook:
     """
@@ -271,10 +271,10 @@ def read_data(path='data'):
     return unpacked
 
 
-def write_data(contacts: AddressBook, path='data'):
+def write_data(contacts: AddressBook, path="data"):
     """
-    Write contacts to the given file using 'pickle' package.
-    By default path = 'data'.
+    Write contacts to the given file using "pickle" package.
+    By default path = "data".
     :param contacts:
     :param path:
     :return  None:
@@ -291,31 +291,31 @@ def user_help(*args, **kwargs):
     :return None:
     """
     data = [
-        [1, 'add', '<name> <phone number>', 'Adding a new contact to the contacts'],
-        [2, 'change', '<name> <old p_number>\n <new p_number>', 'Stores in memory a new phone number for the username.'],
-        [3, 'find-phone', '<name>', 'Return the name and phone number of contact.'],
-        [4, 'find-name', '<phone>', 'Returns the phone number and the contact to whom it belongs.'],
-        [5, 'find-email', '<email>', 'Returns the email and the contact to whom it belongs.'],
-        [6, 'find-birthday', '<birthday>', 'Returns the names of contacts who have a birthday on this day.'],
-        [7, 'find-address', '<address>', 'Returns the name of the contact that has the following address.'],
-        [8, 'all', '', 'Return all saved contacts with p_numbers, birthdays and addresses.'],
-        [9, 'add-birthday', '<name> <DD.MM.YYYY>', 'Adding a birthday date to the contact.'],
-        [10, 'show-birthday', '<name>', 'Return birthday of the requested user from contacts.'],
-        [11, 'birthdays', '', 'Print a list of people who need to be greeted by days in the n_week.'],
-        [12, 'add-address', '<name> <country> <city>\n <street> <house_number>', 'Adding an address to the contact.'],
-        [13, 'add-note', '<text>', "Adding note to user's notebook."],
-        [14, 'edit-note', '<id> <text>', "Editing note by id from user's notebook."],
-        [15, 'delete-note', '<id>', "Deleting note from user's notebook."],
-        [16, 'search-notes-by-text', '<query>', "Searching notes in user's notebook by specified query."],
-        [17, 'add-email', '<name> <email address>', "Adding an email to the contact."],
-        [18, 'edit-email', '<name> <old email address>\n <new email address>', "Changes the email address."],
-        [19, 'add-tag', '<note id> <tag>', 'Adds tag to chosen note.'],
-        [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of chosen note.'],
-        [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
-        [22, 'all-notes', '', "Prints all notes for the user."],
-        [23, 'sort-notes', '', "Prints all notes sorted by tags."],
-        [24, 'close/Exit', '', "Exit the program."],
-        [25, 'tell-a-joke', '', "Returns a random joke."]
+        [1, "add", "<name> <phone number>", "Adding a new contact to the contacts"],
+        [2, "change", "<name> <old p_number>\n <new p_number>", "Stores in memory a new phone number for the username."],
+        [3, "find-phone", "<name>", "Return the name and phone number of contact."],
+        [4, "find-name", "<phone>", "Returns the phone number and the contact to whom it belongs."],
+        [5, "find-email", "<email>", "Returns the email and the contact to whom it belongs."],
+        [6, "find-birthday", "<birthday>", "Returns the names of contacts who have a birthday on this day."],
+        [7, "find-address", "<address>", "Returns the name of the contact that has the following address."],
+        [8, "all", "", "Return all saved contacts with p_numbers, birthdays and addresses."],
+        [9, "add-birthday", "<name> <DD.MM.YYYY>", "Adding a birthday date to the contact."],
+        [10, "show-birthday", "<name>", "Return birthday of the requested user from contacts."],
+        [11, "birthdays", "", "Print a list of people who need to be greeted by days in the n_week."],
+        [12, "add-address", "<name> <country> <city>\n <street> <house_number>", "Adding an address to the contact."],
+        [13, "add-note", "<text>", "Adding note to user's notebook."],
+        [14, "edit-note", "<id> <text>", "Editing note by id from user's notebook."],
+        [15, "delete-note", "<id>", "Deleting note from user's notebook."],
+        [16, "search-notes-by-text", "<query>", "Searching notes in user's notebook by specified query."],
+        [17, "add-email", "<name> <email address>", "Adding an email to the contact."],
+        [18, "edit-email", "<name> <old email address>\n <new email address>", "Changes the email address."],
+        [19, "add-tag", "<note id> <tag>", "Adds tag to chosen note."],
+        [20, "delete-tag", "<note id> <tag>", "Deletes tag of chosen note."],
+        [21, "search-notes-by-tag", "<tag>", "Searching notes in user's notebook by specified tag."],
+        [22, "all-notes", "", "Prints all notes for the user."],
+        [23, "sort-notes", "", "Prints all notes sorted by tags."],
+        [24, "close/Exit", "", "Exit the program."],
+        [25, "tell-a-joke", "", "Returns a random joke."]
 
     ]
     headers = ["#", "Command", "Arguments", "Description"]
@@ -339,7 +339,7 @@ def add_birthday(args, contacts: AddressBook):
     if name in contacts:
         user = contacts[name]
 
-        if user.birthday != 'Unknown':
+        if user.birthday != "Unknown":
             raise exceptions.BirthdayConflictError
 
         user.add_birthday(birthday)
@@ -361,8 +361,8 @@ def show_birthday(args, contacts: AddressBook):
         raise exceptions.ShowBirthdayIndexError
     if name in contacts:
         print(
-            f'{Color.YELLOW}{name.title()}{Color.RESET}\'s'
-            f' birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}')
+            f"{Color.YELLOW}{name.title()}{Color.RESET}\"s"
+            f" birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}")
     else:
         raise exceptions.BirthdayKeyError
 
@@ -458,7 +458,7 @@ def main():
         "sort-notes": sort_notes_by_tags
     }
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
-    commands_list = list(menu) + ["close", "exit", "good bye", 'hello', 'tell-a-joke']
+    commands_list = list(menu) + ["close", "exit", "good bye", "hello", "tell-a-joke"]
     completer = WordCompleter(commands_list)
     print(logo)
     print(
@@ -466,7 +466,7 @@ def main():
         f" to see all commands.\n")
     while True:
         try:
-            user_input = prompt('Enter a command: ', completer=completer, complete_while_typing=False)
+            user_input = prompt("Enter a command: ", completer=completer, complete_while_typing=False)
         except KeyboardInterrupt:
             print(f"You pressed Ctrl+C! Exiting. {Color.YELLOW_BOLD}Good bye!{Color.RESET}")
             write_data(contacts)
@@ -478,7 +478,7 @@ def main():
             write_data(contacts)
             notebook.save_notes()
             break
-        elif command == 'hello':
+        elif command == "hello":
             print("How can I help you?\n")
         elif command in address_book_menu:
             address_book_menu[command](args, contacts)
@@ -486,7 +486,7 @@ def main():
         elif command in notebook_menu:
             notebook_menu[command](notebook, args)
             notebook.save_notes()
-        elif command == 'tell-a-joke':
+        elif command == "tell-a-joke":
             print(f'{Color.YELLOW_BOLD}{get_joke()}{Color.RESET}\n')
         else:
             print(f"{Color.RED}Invalid command. Print 'Help' to see all commands.\n{Color.RESET}")

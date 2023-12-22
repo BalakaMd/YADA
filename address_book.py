@@ -30,7 +30,7 @@ def data_validator(func):
 
     def inner(*args, **kwargs):
         """
-        Handles exception 'ValueError' if the phone number or birthday is in incorrect format.
+        Handles exception "ValueError" if the phone number or birthday is in incorrect format.
         :param args:
         :param kwargs:
         :return None:
@@ -38,7 +38,7 @@ def data_validator(func):
         try:
             func(*args, **kwargs)
         except ValueError:
-            if func.__name__ == 'add_birthday':
+            if func.__name__ == "add_birthday":
                 print(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'\n{Color.RESET}")
             else:
                 print(f"{Color.RED}Phone number must be 10 digits long\n{Color.RESET}")
@@ -93,7 +93,7 @@ class Phone(Field):
     def validate_phone_number(self):
         """
         Validates the required format (10 digits) of the phone number.
-        :return: Raises 'ValueError' if the phone number format is invalid.
+        :return: Raises "ValueError" if the phone number format is invalid.
         """
         if re.findall(r'^\d{10}$', str(self.value.replace('+38', ''))):
             print(f"{Color.GREEN}Contacts updated.\n{Color.RESET}")
@@ -111,14 +111,14 @@ class Birthday(Field):
         date_pattern = re.compile(r'^\d{2}\.\d{2}\.\d{4}$')
         """
         Validates the required format (DD.MM.YYYY) of the birthday date.
-        :return: Raises 'ValueError' if the birthday date format is invalid.
+        :return: Raises "ValueError" if the birthday date format is invalid.
         """
         if date_pattern.match(self.value):
-            day, month, year = self.value.split('.')
+            day, month, year = self.value.split(".")
             if int(day) <= 31 and int(month) <= 12:
                 print(f"{Color.GREEN}Birthday added.{Color.RESET}\n")
                 return date(int(year), int(month), int(day))
-            print(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'\n{Color.RESET}")
+            print(f"{Color.RED}Birthday date must in this format DD.MM.YYYY\n{Color.RESET}")
         else:
             raise ValueError(f"{Color.RED}Birthday date must in this format 'DD.MM.YYYY'{Color.RESET}")
 
@@ -151,7 +151,7 @@ class Email(Field):
     def validate_email(self):
         """
         Validates the email address using a regular expression.
-        :return: Raises 'ValueError' if the email format is invalid.
+        :return: Raises "ValueError" if the email format is invalid.
         """
         email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         if email_pattern.match(self.value):
@@ -184,10 +184,10 @@ class Record:
         :param name:
         """
         self.name = Name(name.lower())
-        self.phones = []
-        self.emails = []  # Add emails attribute
-        self.birthday = 'Unknown'
-        self.addresses = []  # Add addresses attribute
+        self.phones = []            
+        self.emails = []            
+        self.birthday = "Unknown"         
+        self.addresses = []            
 
     @data_validator
     def add_phone(self, phone: str):
@@ -271,14 +271,14 @@ class Record:
             print(f"{Color.RED}Old email not found.{Color.RESET}")
 
     def __str__(self):
-        phone_info = '; '.join([p.value for p in self.phones])
-        email_info = '; '.join([p.value for p in self.emails])
+        phone_info = "; ".join([p.value for p in self.phones])
+        email_info = "; ".join([p.value for p in self.emails])
         birthday_info = self.birthday if self.birthday != "Unknown" else "Unknown"
-        address_info = '; '.join([a.value for a in getattr(self, 'addresses', [])]) \
-            if hasattr(self, 'addresses') else "Unknown"
+        address_info = "; ".join([a.value for a in getattr(self, "addresses", [])]) \
+            if hasattr(self, "addresses") else "Unknown"
 
         return (f"Contact name: {self.name}, phones: {phone_info},"
-                f" email: {email_info}, birthday: {birthday_info}, addresses: {address_info}")
+                f"email: {email_info}, birthday: {birthday_info}, addresses: {address_info}")
 
 
 class AddressBook(UserDict):
@@ -300,7 +300,7 @@ class AddressBook(UserDict):
         :param name:
         :return returns the string representation of the contact information:
         """
-        return f'{self.data.get(name.lower())}\n'
+        return f"{self.data.get(name.lower())}\n"
 
     def find_by_phone(self, phone: str):
         """
@@ -317,7 +317,7 @@ class AddressBook(UserDict):
     def find_by_birthday(self, birthday: str):
         """
         Finds records in the address book by birthday.
-        :param birthday: A string representing the birthday in the format 'DD.MM.YYYY'.
+        :param birthday: A string representing the birthday in the format "DD.MM.YYYY".
         :return returns a list of contact information:
         """
         matching_records = []
