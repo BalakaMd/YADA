@@ -3,7 +3,7 @@ from datetime import datetime
 from address_book import AddressBook, Record, Color
 from birthday_reminder import get_birthdays_per_week
 from notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, \
-    search_notes_by_text, show_all_notes
+    search_notes_by_text, show_all_notes, sort_notes_by_tags
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate
@@ -312,7 +312,9 @@ def user_help(*args, **kwargs):
         [19, 'add-tag', '<note id> <tag>', 'Adds tag to chosen note.'],
         [20, 'delete-tag', '<note id> <tag>', 'Deletes tag of chosen note.'],
         [21, 'search-notes-by-tag', '<tag>', "Searching notes in user's notebook by specified tag."],
-        [22, 'close/Exit', '', "Exit the program."]
+        [22, 'all-notes', '', "Prints all notes for the user."],
+        [23, 'sort-notes', '', "Prints all notes sorted by tags."],
+        [24, 'close/Exit', '', "Exit the program."]
 
     ]
     headers = ["#", "Command", "Arguments", "Description"]
@@ -451,8 +453,8 @@ def main():
         "delete-note": delete_note,
         "all-notes": show_all_notes,
         "add-tag": add_tag_to_note,
-        "delete-tag": delete_tag
-
+        "delete-tag": delete_tag,
+        "sort-notes": sort_notes_by_tags
     }
     menu = list(address_book_menu.keys()) + list(notebook_menu.keys())
     commands_list = list(menu) + ["close", "exit", "good bye", 'hello', 'tell-a-joke']

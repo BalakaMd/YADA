@@ -1,4 +1,5 @@
 # models block
+from tabulate import tabulate
 from address_book import Color
 from exceptions import (AddNoteError, AddTagError, DeleteNoteError, DeleteTagError, EditNoteError,
                         SearchNoteByTagError, SearchNoteByTextError, input_note_error)
@@ -128,14 +129,19 @@ def search_notes_by_text(notebook, args):
     return None
     """
     try:
+        data = []
         count = 0
         for note in notebook.notes:
             if args[0].lower() in note.text.lower():
                 tags_str = ", ".join(note.tags)
-                print(f"Tags: {tags_str}\n{note.id}:{note.text}")
+                data.append([note.id, str(tags_str), note.text])
                 count += 1
         if count == 0:
             print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}\n")
+            return
+        headers = ["Id", "Tags", "Note Text"]
+        table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+        print(table)
     except (ValueError, IndexError):
         raise SearchNoteByTextError
 
@@ -149,15 +155,20 @@ def search_notes_by_tag(notebook, args):
     return None
     """
     try:
+        data = []
         count = 0
         for note in notebook.notes:
             for tag in note.tags:
                 if str(tag.lower()) == args[0].lower():
                     tags_str = ", ".join(note.tags)
-                    print(f"{Color.CYAN}Tags: {tags_str}\n{note.id}:{note.text}{Color.RESET}\n")
+                    data.append([note.id, str(tags_str), note.text])
                     count += 1
         if count == 0:
             print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}")
+            return
+        headers = ["Id", "Tags", "Note Text"]
+        table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+        print(table)
     except (ValueError, IndexError):
         raise SearchNoteByTagError
 
@@ -192,11 +203,15 @@ def show_all_notes(notebook, args):
     if not notebook.notes:
         print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}")
         return
+    data = []
+    headers = ["Id", "Tags", "Note Text"]
     for note in notebook.notes:
         tags_str = ''
         if len(note.tags) != 0:
             tags_str = ", ".join(note.tags)
-        print(f"Tags: {str(tags_str)}\n{note.id}:{note.text}\n")
+        data.append([note.id, str(tags_str), note.text])
+    table = tabulate(data, headers=headers, tablefmt="fancy_grid")
+    print(table)
 
 
 @input_note_error
@@ -242,3 +257,23 @@ def delete_tag(notebook, args):
             print(f"Note with ID {note_id} not found.")
     except (ValueError, IndexError):
         raise DeleteTagError
+    
+
+def sort_notes_by_tags(notebook, args):
+    """
+    Sorts notes by their tags and prints them.
+    """
+    if not notebook.notes:
+        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}")
+        return
+    sorted_by_tags = {}
+    for note in notebook.notes:
+        for tag in note.tags:
+            if tag not in sorted_by_tags:
+                sorted_by_tags[tag] = []
+            sorted_by_tags[tag].append(note)
+
+    for tag, notes in sorted_by_tags.items():
+        print(f"{Color.GREEN}Tag: {tag}{Color.RESET}")
+        for note in notes:
+            print(f" - ID: {note.id}, Text: {note.text}")

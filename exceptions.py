@@ -234,10 +234,10 @@ def input_error(func):
 
 def open_file_error(func):
     """
-        Handles exception 'FileNotFoundError' when trying to open a non-existent file.
-        :param func:
-        :return wrapper:
-        """
+    Handles exception 'FileNotFoundError' when trying to open a non-existent file.
+    :param func:
+    :return wrapper:
+    """
 
     def inner(*args, **kwargs):
         try:
