@@ -3,10 +3,9 @@ import setuptools
 setuptools.setup(
     name="yada",
     version="0.1.0",
-    author="Your Name",
-    author_email="your_email",
+    author="YADA Team",
     description="This is a yada package.",
-    url="package_github_page",
+    url="https://github.com/BalakaMd/YADA",
     packages=['yada'],
     install_requires=[
         'prompt-toolkit==3.0.43',
