@@ -7,7 +7,6 @@ from yada.notebook import Notebook, add_note, add_tag_to_note, delete_note, dele
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate
-# from yada.exceptions import (AddContactValueError, RemoveContactIndexError, FindNameIndexError, ChangeContactValueError, input_error)
 from yada.exceptions import *
 from yada.logo import logo
 from yada.jokes import get_joke
