@@ -2,7 +2,7 @@ from collections import defaultdict
 from datetime import datetime
 from tabulate import tabulate
 
-from address_book import AddressBook, Color
+from yada.address_book import AddressBook, Color
 
 
 def get_birthdays_per_week(args: list, contacts: AddressBook):

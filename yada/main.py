@@ -1,20 +1,21 @@
 import pickle
 from datetime import datetime
-from address_book import AddressBook, Record, Color
-from birthday_reminder import get_birthdays_per_week
-from notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, \
+from yada.address_book import AddressBook, Record, Color
+from yada.birthday_reminder import get_birthdays_per_week
+from yada.notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, \
     search_notes_by_text, show_all_notes, sort_notes_by_tags
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate
-import exceptions
-from logo import logo
-from jokes import get_joke
+# from yada.exceptions import (AddContactValueError, RemoveContactIndexError, FindNameIndexError, ChangeContactValueError, input_error)
+from yada.exceptions import *
+from yada.logo import logo
+from yada.jokes import get_joke
 
 
 # function block
 
-@exceptions.input_error
+@input_error
 def parse_input(user_input: str):
     """
     Takes a string of user input and splits it into words using the split() method.
@@ -28,7 +29,7 @@ def parse_input(user_input: str):
     return cmd, *args
 
 
-@exceptions.input_error
+@input_error
 def add_contact(args: list, contacts: AddressBook):
     """
     Adding a new contact to the contact AddressBook.
@@ -40,7 +41,7 @@ def add_contact(args: list, contacts: AddressBook):
     try:
         name, phone = args
     except ValueError:
-        raise exceptions.AddContactValueError
+        raise AddContactValueError
     if name in contacts:
         user = contacts[name]
         user.add_phone(phone)
@@ -50,7 +51,7 @@ def add_contact(args: list, contacts: AddressBook):
         contacts.add_record(user)
 
 
-@exceptions.input_error
+@input_error
 def remove_contact(args: list, contacts: AddressBook):
     """
     Removing a contact from the contact AddressBook if exist .
@@ -61,7 +62,7 @@ def remove_contact(args: list, contacts: AddressBook):
     try:
         name = args[0]
     except IndexError:
-        raise exceptions.RemoveContactIndexError
+        raise RemoveContactIndexError
 
     if name in contacts:
         contacts.delete(name)
@@ -70,7 +71,7 @@ def remove_contact(args: list, contacts: AddressBook):
         raise KeyError
 
 
-@exceptions.input_error
+@input_error
 def change_contact(args: list, contacts: AddressBook):
     """
     Stores in memory a new phone number for the username contact that already exists in the AddressBook.
@@ -81,7 +82,7 @@ def change_contact(args: list, contacts: AddressBook):
     try:
         name, old_phone, new_phone = args
     except ValueError:
-        raise exceptions.ChangeContactValueError
+        raise ChangeContactValueError
     if name not in contacts:
         print(f"{Color.RED}Contact not found.\n{Color.RESET}")
         return None
@@ -94,7 +95,7 @@ def change_contact(args: list, contacts: AddressBook):
                 print(f"{Color.RED}Old phone number not found.\n{Color.RESET}")
 
 
-@exceptions.input_error
+@input_error
 def find_by_name(args: list, contacts: AddressBook):
     """
     Returns the name and phone number if the contact is found.
@@ -109,7 +110,7 @@ def find_by_name(args: list, contacts: AddressBook):
     try:
         name = args[0]
     except IndexError:
-        raise exceptions.FindNameIndexError
+        raise FindNameIndexError
     if name in contacts:
         data.append([name.title(), [phone.value for phone in contacts[name].phones]])
     else:
@@ -118,7 +119,7 @@ def find_by_name(args: list, contacts: AddressBook):
     print(table)
 
 
-@exceptions.input_error
+@input_error
 def find_by_phone(args: list, contacts: AddressBook):
     """
     Returns the name and phone number if the contact is found by phone number.
@@ -130,9 +131,9 @@ def find_by_phone(args: list, contacts: AddressBook):
     """
     try:
         if len(args[0]) != 10:
-            raise exceptions.PhoneLengthError
+            raise PhoneLengthError
     except IndexError:
-        raise exceptions.FindPhoneIndexError
+        raise FindPhoneIndexError
 
     data = []
     headers = ["Name", "Phone"]
@@ -145,7 +146,7 @@ def find_by_phone(args: list, contacts: AddressBook):
     print(table)
 
 
-@exceptions.input_error
+@input_error
 def find_by_birthday(args: list, contacts: AddressBook):
     """
     Returns the name and phone number if the contact is found by birthday.
@@ -158,9 +159,9 @@ def find_by_birthday(args: list, contacts: AddressBook):
     try:
         datetime.strptime(args[0], "%d.%m.%Y")
     except ValueError:
-        raise exceptions.BirthdayFormatError
+        raise BirthdayFormatError
     except IndexError:
-        raise exceptions.BirthdayIndexError
+        raise BirthdayIndexError
 
     data = []
     headers = ["Name", "Birthday"]
@@ -170,12 +171,12 @@ def find_by_birthday(args: list, contacts: AddressBook):
         for result in results:
             data.append([result.name.value.capitalize(), result.birthday])
     else:
-        raise exceptions.BirthdayNotFoundError
+        raise BirthdayNotFoundError
     table = tabulate(data, headers=headers, tablefmt="fancy_grid")
     print(table)
 
 
-@exceptions.input_error
+@input_error
 def find_by_email(args: list, contacts: AddressBook):
     """
     Returns the name and birthday if the contact is found by email.
@@ -188,7 +189,7 @@ def find_by_email(args: list, contacts: AddressBook):
     try:
         email_to_find = args[0]
     except IndexError:
-        raise exceptions.FindEmailIndexError
+        raise FindEmailIndexError
 
     data = []
     headers = ["Name", "Email"]
@@ -204,7 +205,7 @@ def find_by_email(args: list, contacts: AddressBook):
     print(table)
 
 
-@exceptions.input_error
+@input_error
 def find_by_address(args: list, contacts: AddressBook):
     """
     Returns the name and birthday if the contact is found by address.
@@ -217,7 +218,7 @@ def find_by_address(args: list, contacts: AddressBook):
     try:
         address_to_find = args[0]
     except IndexError:
-        raise exceptions.FindBirthdayIndexError
+        raise FindBirthdayIndexError
 
     data = []
     headers = ["Name", "Address"]
@@ -258,7 +259,7 @@ def get_all_phones(args, contacts: AddressBook):
         print(table)
 
 
-@exceptions.open_file_error
+@open_file_error
 def read_data(path="data"):
     """
     Read users from the given file using "pickle" package.
@@ -317,38 +318,37 @@ def user_help(*args, **kwargs):
         [23, "sort-notes", "", "Prints all notes sorted by tags."],
         [24, "close/Exit", "", "Exit the program."],
         [25, "tell-a-joke", "", "Returns a random joke."]
-
     ]
     headers = ["#", "Command", "Arguments", "Description"]
     table = tabulate(data, headers=headers, tablefmt="fancy_grid")
     print(table)
 
 
-@exceptions.input_error
+@input_error
 def add_birthday(args, contacts: AddressBook):
     """
     Adds a birthday to the user in contacts.
     :param args:
     :param contacts:
-    :raise exceptions.BirthdayConflictError: if a birthday already exists for the user.
+    :raise BirthdayConflictError: if a birthday already exists for the user.
     """
     try:
         name, birthday = args
     except ValueError:
-        raise exceptions.AddBirthdayValueError()
+        raise AddBirthdayValueError()
 
     if name in contacts:
         user = contacts[name]
 
         if user.birthday != "Unknown":
-            raise exceptions.BirthdayConflictError
+            raise BirthdayConflictError
 
         user.add_birthday(birthday)
     else:
-        raise exceptions.BirthdayKeyError
+        raise BirthdayKeyError
 
 
-@exceptions.input_error
+@input_error
 def show_birthday(args, contacts: AddressBook):
     """
     Print the birthday of the requested user from contacts to the console.
@@ -359,16 +359,16 @@ def show_birthday(args, contacts: AddressBook):
     try:
         name = args[0]
     except IndexError:
-        raise exceptions.ShowBirthdayIndexError
+        raise ShowBirthdayIndexError
     if name in contacts:
         print(
             f"{Color.YELLOW}{name.title()}{Color.RESET}\"s"
             f" birthday is on {Color.WHITE_BOLD}{contacts[name].birthday}\n{Color.RESET}")
     else:
-        raise exceptions.BirthdayKeyError
+        raise BirthdayKeyError
 
 
-@exceptions.input_error
+@input_error
 def add_address(args: list, contacts: AddressBook):
     """
     Adds an address to the user in contacts.
@@ -379,7 +379,7 @@ def add_address(args: list, contacts: AddressBook):
     try:
         name, country, city, street, house_number = args
     except ValueError:
-        raise exceptions.AddAddressValueError()
+        raise AddAddressValueError()
     if name in contacts:
         user = contacts[name]
         user.add_address(country, city, street, house_number)
@@ -388,7 +388,7 @@ def add_address(args: list, contacts: AddressBook):
         raise KeyError
 
 
-@exceptions.input_error
+@input_error
 def add_email(args: list, contacts: AddressBook):
     """
     Adds an email to the user in contacts.
@@ -398,7 +398,7 @@ def add_email(args: list, contacts: AddressBook):
     try:
         name, email = args
     except ValueError:
-        raise exceptions.AddEmailValueError()
+        raise AddEmailValueError()
     if name in contacts:
         user = contacts[name]
         user.add_email(email)
@@ -406,7 +406,7 @@ def add_email(args: list, contacts: AddressBook):
         raise AttributeError
 
 
-@exceptions.input_error
+@input_error
 def edit_email(args: list, contacts: AddressBook):
     """
     Edits an email for the user in contacts.
@@ -416,7 +416,7 @@ def edit_email(args: list, contacts: AddressBook):
     try:
         name, old_email, new_email = args
     except ValueError:
-        raise exceptions.EditEmailValueError()
+        raise EditEmailValueError()
     if name in contacts:
         user = contacts[name]
         user.edit_email(old_email, new_email)
