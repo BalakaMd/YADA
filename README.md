@@ -79,7 +79,7 @@ To uninstall the program:
 1. Open a terminal.
 2. Run the following command:
    ```bash
-   pip uninstall YADA 
+   pip uninstall yada 
    ```
 3. Confirm the uninstallation if prompted.
 
