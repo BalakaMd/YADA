@@ -1,4 +1,5 @@
-from address_book import Color
+from yada.address_book import Color
+
 logo = f"""{Color.GREEN}
     .__________________________.
     | .___________________. |==|

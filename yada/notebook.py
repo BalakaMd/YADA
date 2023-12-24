@@ -1,7 +1,7 @@
 # models block
 from tabulate import tabulate
-from address_book import Color
-from exceptions import (AddNoteError, AddTagError, DeleteNoteError, DeleteTagError, EditNoteError,
+from yada.address_book import Color
+from yada.exceptions import (AddNoteError, AddTagError, DeleteNoteError, DeleteTagError, EditNoteError,
                         SearchNoteByTagError, SearchNoteByTextError, input_note_error)
 
 NOTES_FILE_NAME = "notes.txt"

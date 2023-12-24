@@ -1,4 +1,4 @@
-from address_book import AddressBook, Color
+from yada.address_book import AddressBook, Color
 
 
 class PhoneLengthError(Exception):
