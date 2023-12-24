@@ -1,8 +1,9 @@
 # models block
 from tabulate import tabulate
 from yada.address_book import Color
-from yada.exceptions import (AddNoteError, AddTagError, DeleteNoteError, DeleteTagError, EditNoteError,
-                        SearchNoteByTagError, SearchNoteByTextError, input_note_error)
+from yada.exceptions import (AddNoteError, AddTagError,
+                             DeleteNoteError, DeleteTagError, EditNoteError, SearchNoteByTagError,
+                             SearchNoteByTextError, input_note_error)
 
 NOTES_FILE_NAME = "notes.txt"
 
@@ -64,7 +65,7 @@ class Notebook:
                     note_id, text = note_line.split(":", 1)
                     self.notes.append(Note(text=text, note_id=int(note_id), tags=tags))
         except FileNotFoundError:
-            print(f"{Color.RED}File with notes {NOTES_FILE_NAME} doesn't exist! A new one was created{Color.RESET}")
+            print(f"{Color.RED}File with notes {NOTES_FILE_NAME} doesn't exist! A new one was created{Color.RESET}\n")
 
     def find_note_by_id(self, note_id):
         """
@@ -113,9 +114,9 @@ def edit_note(notebook, args):
             if note.id == note_id:
                 note.text = str(new_text)
                 notebook.save_notes()
-                print(f"Note {note_id} was edited.")
+                print(f"Note {note_id} was edited.\n")
                 return
-        print(f"Note with Id:{note_id} doesn't exist.")
+        print(f"Note with Id:{note_id} doesn't exist.\n")
     except (ValueError, IndexError):
         raise EditNoteError
 
@@ -164,7 +165,7 @@ def search_notes_by_tag(notebook, args):
                     data.append([note.id, str(tags_str), note.text])
                     count += 1
         if count == 0:
-            print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}")
+            print(f"{Color.RED}There are no notes matching specified criteria.{Color.RESET}\n")
             return
         headers = ["Id", "Tags", "Note Text"]
         table = tabulate(data, headers=headers, tablefmt="fancy_grid")
@@ -185,11 +186,11 @@ def delete_note(notebook, args):
         initial_length = len(notebook.notes)
         notebook.notes = [note for note in notebook.notes if note.id != note_id]
         if initial_length == len(notebook.notes):
-            print(f"There is no note with id {note_id}.")
+            print(f"There is no note with id {note_id}.\n")
             return
         else:
             notebook.save_notes()
-            print(f"Note with Id:{note_id} was deleted.")
+            print(f"Note with Id:{note_id} was deleted.\n")
     except (ValueError, IndexError):
         raise DeleteNoteError
 
@@ -201,7 +202,7 @@ def show_all_notes(notebook, args):
     :return None:
     """
     if not notebook.notes:
-        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}")
+        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}\n")
         return
     data = []
     headers = ["Id", "Tags", "Note Text"]
@@ -230,7 +231,7 @@ def add_tag_to_note(notebook, args):
             notebook.save_notes()
             print(f"{Color.GREEN}Tag '{tag}' added to note ID {note_id}.{Color.RESET}\n")
         else:
-            print(f"Note with ID {note_id} not found.")
+            print(f"{Color.RED}Note with ID {note_id} not found.{Color.RESET}\n")
     except (ValueError, IndexError):
         raise AddTagError
 
@@ -250,21 +251,21 @@ def delete_tag(notebook, args):
             result = note.delete_tag(str(tag))
             notebook.save_notes()
             if result:
-                print(f"Tag {str(tag)} of note ID {note_id} deleted.")
+                print(f"{Color.GREEN}Tag {str(tag)} of note ID {note_id} deleted.{Color.RESET}\n")
             else:
-                print(f"No tag {str(tag)} found in note ID {note_id}.")
+                print(f"{Color.RED}No tag {str(tag)} found in note ID {note_id}.{Color.RESET}\n")
         else:
-            print(f"Note with ID {note_id} not found.")
+            print(f"{Color.RED}Note with ID {note_id} not found.{Color.RESET}\n")
     except (ValueError, IndexError):
         raise DeleteTagError
-    
+
 
 def sort_notes_by_tags(notebook, args):
     """
     Sorts notes by their tags and prints them.
     """
     if not notebook.notes:
-        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}")
+        print(f"{Color.RED}There are no notes in the notebook.{Color.RESET}\n")
         return
     sorted_by_tags = {}
     for note in notebook.notes:

@@ -219,7 +219,7 @@ def input_error(func):
             print(f"{Color.RED}Phone number must be 10 digits long\n{Color.RESET}")
         except BirthdayFormatError:
             print(
-                f"{Color.RED}Birthday date must in this format{Color.RESET} {Color.YELLOW}'DD.MM.YYYY.'\n{Color.RESET}")
+                f"{Color.RED}Birthday date must be in this format{Color.RESET} {Color.YELLOW}'DD.MM.YYYY.'\n{Color.RESET}")
         except BirthdayIndexError:
             print(
                 f"{Color.RED}Enter a command in this format{Color.RESET} --->>>"

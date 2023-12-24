@@ -184,10 +184,10 @@ class Record:
         :param name:
         """
         self.name = Name(name.lower())
-        self.phones = []            
-        self.emails = []            
-        self.birthday = "Unknown"         
-        self.addresses = []            
+        self.phones = []
+        self.emails = []
+        self.birthday = "Unknown"
+        self.addresses = []
 
     @data_validator
     def add_phone(self, phone: str):

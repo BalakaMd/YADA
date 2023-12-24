@@ -1,9 +1,9 @@
 import pickle
 from datetime import datetime
-from yada.address_book import AddressBook, Record, Color
+from yada.address_book import Record
 from yada.birthday_reminder import get_birthdays_per_week
-from yada.notebook import Notebook, add_note, add_tag_to_note, delete_note, delete_tag, edit_note, search_notes_by_tag, \
-    search_notes_by_text, show_all_notes, sort_notes_by_tags
+from yada.notebook import (Notebook, add_note, add_tag_to_note, delete_note, delete_tag,
+                           edit_note, search_notes_by_tag, search_notes_by_text, show_all_notes, sort_notes_by_tags)
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from tabulate import tabulate

@@ -55,6 +55,36 @@ This Assistant Bot is designed to manage an address book and a notebook for user
 4. **Notebook Commands**:
    - Notebook-related commands like `add-note`, `edit-note`, `search-notes-by-text`, `search-notes-by-tag`, etc., are available for managing notes.
 
+---
+
+## Installation
+
+To install the program, follow these steps:
+
+1. Open a terminal.
+2. Navigate to the root folder of the downloaded program using the `cd` command.
+3. Run the following command:
+   ```bash
+   pip install .
+   ```
+4. After successful installation, you can run the program from any directory using the following command:
+   ```bash
+   yada
+   ```
+
+## Uninstallation
+
+To uninstall the program:
+
+1. Open a terminal.
+2. Run the following command:
+   ```bash
+   pip uninstall yada 
+   ```
+3. Confirm the uninstallation if prompted.
+
+---
+
 ## Contributors
 
 - [Yevhen Havrysh]
